@@ -152,4 +152,12 @@ async function sendMessenger(){
   }catch(e){alert('❌ မပို့နိုင်သေးပါ။ Admin Telegram ချိတ်ဆက်မှုကို စစ်ပေးရပါမယ်။');}
   finally{btn.disabled=false;btn.textContent='📤 Order + Slip ပို့မယ်';}
 }
-</script><div style="text-align:center;margin:20px 0"><a href="admin.html" style="display:inline-block;padding:10px 16px;background:#6957ff;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">🎮 Admin Dashboard</a></div></body></html>
+</script><div style="text-align:center;margin:20px 0"><a href="admin.html" style="display:inline-block;padding:10px 16px;background:#6957ff;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">🎮 Admin Dashboard</a></div><style>
+.contact-float{position:fixed;right:12px;top:42%;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.contact-btn{display:flex;align-items:center;gap:6px;padding:10px 12px;border-radius:999px;color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 4px 14px #0003;backdrop-filter:blur(6px)}
+.contact-btn.tg{background:#229ED9}.contact-btn.ms{background:#7B61FF}
+@media(max-width:600px){.contact-float{right:8px;top:45%}.contact-btn{width:42px;height:42px;padding:0;justify-content:center;border-radius:50%;font-size:19px}.contact-btn span{display:none}}
+</style><div class="contact-float" aria-label="ဆက်သွယ်ရန်">
+<a class="contact-btn tg" href="https://t.me/KYAWZINDiamondShop" target="_blank" rel="noopener">✈️ <span>Telegram</span></a>
+<a class="contact-btn ms" href="https://www.messenger.com/" target="_blank" rel="noopener">💬 <span>Messenger</span></a>
+</div></body></html>
