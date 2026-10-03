@@ -29,7 +29,7 @@
 </div>
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
 <div class="paybox"><div class="bank" id="paymentInfo"><b>💳 K PLUS (KBank)</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
-<button class="messenger" onclick="sendMessenger()">💬 Messenger မှာ Order + Slip ပို့မယ်</button><div class="order" id="order"></div></section>
+<button class="messenger" onclick="sendMessenger()">📤 Order + Slip ပို့မယ်</button><div class="order" id="order"></div></section>
 <section class="checkout" id="history"><h2>📋 Order မှတ်တမ်း</h2><div id="historyList"><div class="note">ဒီဖုန်း/Browser မှာ တင်ထားတဲ့ Order မှတ်တမ်းတွေ ဒီနေရာမှာ ပြပါမယ်။</div></div></section>
 <div class="footer">© 2026 KYAW ZIN Gaming Shop • Fast • Safe • Trusted<br><a href="terms.html" style="color:#6957ff;text-decoration:none">Terms & Conditions</a> · <a href="refund-policy.html" style="color:#6957ff;text-decoration:none">Refund Policy</a> · <a href="privacy-policy.html" style="color:#6957ff;text-decoration:none">Privacy Policy</a></div></main>
 <script>
@@ -135,15 +135,21 @@ function renderOrderHistory(){
 }
 renderOrderHistory(); updateCurrencyUI();
 
-function sendMessenger(){
+async function sendMessenger(){
   const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim();
   const file=document.getElementById('slipFile').files[0];
   if(!uid||!zone)return alert('အရင် User ID နဲ့ Zone ID ထည့်ပါ။');
   if(!file)return alert('ငွေလွှဲပြေစာ (Slip) ပုံကို အရင်ရွေးပါ။');
   if(!document.getElementById('order').textContent) makeOrder();
   const t=document.getElementById('order').textContent;
-  navigator.clipboard?.writeText(t);
-  window.open('https://www.facebook.com/share/1LdUDVAogh/','_blank');
-  setTimeout(()=>alert('Messenger ဖွင့်ပြီးပါပြီ။ Order စာကို Paste လုပ်ပြီး Slip ပုံကို Attach လုပ်ပြီး Send လုပ်ပါ။\n\nWebsite တစ်ခုတည်းကနေ Messenger သို့ Slip ပုံကို အလိုအလျောက်ပို့ဖို့ Messenger API + backend လိုပါတယ်။'),300);
+  const btn=document.querySelector('.messenger'); btn.disabled=true; btn.textContent='⏳ Order + Slip ပို့နေပါတယ်...';
+  try{
+    const base64=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
+    const r=await fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64})});
+    const out=await r.json().catch(()=>({}));
+    if(!r.ok||!out.ok) throw new Error(out.error||'ပို့မရပါ');
+    alert('✅ Order + Slip ပုံကို Admin ဆီ ပို့ပြီးပါပြီ။');
+  }catch(e){alert('❌ မပို့နိုင်သေးပါ။ Admin Telegram ချိတ်ဆက်မှုကို စစ်ပေးရပါမယ်။');}
+  finally{btn.disabled=false;btn.textContent='📤 Order + Slip ပို့မယ်';}
 }
 </script><div style="text-align:center;margin:20px 0"><a href="admin.html" style="display:inline-block;padding:10px 16px;background:#6957ff;color:#fff;border-radius:10px;text-decoration:none;font-weight:700">🎮 Admin Dashboard</a></div></body></html>
