@@ -11,7 +11,8 @@ module.exports = async (req, res) => {
 
   const keyId = process.env.LIOGAMES_API_KEY_ID;
   const secret = process.env.LIOGAMES_API_SECRET;
-  if (!keyId || !secret) return res.status(500).json({ error: 'LioGames environment variables are not configured' });
+  const memberCode = process.env.LIOGAMES_MEMBER_CODE;
+  if (!keyId || !secret || !memberCode) return res.status(500).json({ error: 'LioGames environment variables are not configured' });
 
   const data = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
 
@@ -20,12 +21,12 @@ module.exports = async (req, res) => {
     return res.status(402).json({ error: 'Payment must be verified before creating a top-up order' });
   }
 
-  for (const field of ['member_code', 'product_id', 'user_id', 'server_id', 'client_ref']) {
+  for (const field of ['product_id', 'user_id', 'server_id', 'client_ref']) {
     if (!data[field]) return res.status(400).json({ error: field + ' is required' });
   }
 
   const payload = {
-    member_code: String(data.member_code),
+    member_code: memberCode,
     product_id: Number(data.product_id),
     client_ref: String(data.client_ref),
     user_id: String(data.user_id),
