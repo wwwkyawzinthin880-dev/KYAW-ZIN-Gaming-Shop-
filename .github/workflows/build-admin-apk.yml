@@ -1,8 +1,9 @@
-name: Build KZ Admin APK
+name: Build KYAW ZIN APKs
 on:
   push:
     paths:
       - 'admin-apk/**'
+      - 'customer-apk/**'
       - '.github/workflows/build-admin-apk.yml'
   workflow_dispatch:
 jobs:
@@ -17,11 +18,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Locate Android SDK
-        run: |
-          test -x /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager
-          echo "/usr/local/lib/android/sdk/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
-          echo "/usr/local/lib/android/sdk/platform-tools" >> "$GITHUB_PATH"
       - name: Install Android SDK packages
         run: |
           yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null || true
@@ -30,10 +26,17 @@ jobs:
         run: |
           curl -L -o gradle.zip https://services.gradle.org/distributions/gradle-8.9-bin.zip
           unzip -q gradle.zip
-      - name: Build APK
-        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleDebug
+      - name: Build Admin APK
         working-directory: admin-apk
+        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleDebug
+      - name: Build Customer APK
+        working-directory: customer-apk
+        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: KZ-Admin-APK
           path: admin-apk/app/build/outputs/apk/debug/app-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KZ-Customer-APK
+          path: customer-apk/app/build/outputs/apk/debug/app-debug.apk
