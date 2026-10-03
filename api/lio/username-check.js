@@ -11,7 +11,8 @@ module.exports = async (req, res) => {
 
   const keyId = process.env.LIOGAMES_API_KEY_ID;
   const secret = process.env.LIOGAMES_API_SECRET;
-  if (!keyId || !secret) return res.status(500).json({ error: 'LioGames environment variables are not configured' });
+  const memberCode = process.env.LIOGAMES_MEMBER_CODE;
+  if (!keyId || !secret || !memberCode) return res.status(500).json({ error: 'LioGames environment variables are not configured' });
 
   const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
   let data;
@@ -22,6 +23,7 @@ module.exports = async (req, res) => {
   }
 
   const raw = JSON.stringify({
+    member_code: memberCode,
     game: 'mobile-legends',
     user_id: String(data.user_id),
     server_id: String(data.server_id)
