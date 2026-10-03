@@ -21,10 +21,12 @@
 <label>MLBB User ID</label><input id="uid" inputmode="numeric" placeholder="ဥပမာ 123456789">
 <label>Zone ID</label><input id="zone" inputmode="numeric" placeholder="ဥပမာ 1234">
 <div class="playerbox" id="playerbox" style="display:none"><span>🎮 In-game Name</span><b id="playerName">စစ်ဆေးနေသည်...</b></div>
-<label>ငွေလွှဲပြေစာ (Slip)</label><input id="slipFile" type="file" accept="image/*">
+<label>ငွေလွှဲပြေစာ (Slip)</label><input 
+                                id="slipFile" type="file" accept="image/*">
+  <div id="slipPreview" style="display:none;margin-top:10px"><img id="slipImg" style="width:100%;max-height:300px;object-fit:contain;border-radius:12px"></div>
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
 <div class="paybox"><div class="bank"><b>💳 K PLUS (KBank)</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
-<div class="actions"><button class="primary" onclick="makeOrder()">🧾 Order ပြုလုပ်မယ်</button></div>
+
 <button class="messenger" onclick="sendMessenger()">💬 Messenger မှာ Order + Slip ပို့မယ်</button><div class="order" id="order"></div></section>
 <div class="footer">© 2026 KYAW ZIN Gaming Shop • Fast • Safe • Trusted</div></main>
 <script>
