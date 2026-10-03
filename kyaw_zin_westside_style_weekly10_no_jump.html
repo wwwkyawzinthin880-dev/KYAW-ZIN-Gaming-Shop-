@@ -62,8 +62,8 @@ function updateCurrencyUI(){
   document.getElementById('wpPrice').textContent=money(55*weeklyQty);
   if(current.name) document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price);
   document.getElementById('rateNote').textContent='💱 1 THB = '+MMK_RATE.toLocaleString('en-US')+' MMK';
-  document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>💳 K PLUS (KBank)</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong>' : '<b>🇲🇲 MMK Payment</b><br>မြန်မာငွေပေးချေမှုအတွက် Order တင်ပြီး Admin ဆီ Slip ပို့ပါ။';
-  document.getElementById('paymentNote').textContent=currency==='THB'?'ငွေလွှဲပြီးနောက် အချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။':'MMK ဈေးနှုန်းကို သတ်မှတ်ထားသော 1 THB = '+MMK_RATE+' MMK နှုန်းဖြင့်တွက်ထားပါတယ်။';
+  document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>🇹🇭 THB Payment — Thai QR / PromptPay</b><br>Account Name — <b>MR. KYAW ZIN THIN</b><br>PromptPay — <strong>153382073</strong><br><span class="note">Thai QR နဲ့ ထိုင်းဘဏ်အကောင့်များမှ ငွေလွှဲနိုင်ပါတယ်။</span>' : '<b>🇲🇲 MMK Payment</b><br>Account Name — <b>Kyaw Zin Thin</b><br>KBZPay / WavePay — <strong>09670555929</strong><br><span class="note">မြန်မာငွေဖြင့် ငွေလွှဲပြီး Slip ပို့ပါ။</span>';
+  document.getElementById('paymentNote').textContent=currency==='THB'?'Thai QR / PromptPay ဖြင့် ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။':'MMK ဈေးနှုန်းကို 1 THB = '+MMK_RATE+' MMK နှုန်းဖြင့်တွက်ထားပါတယ်။ 09670555929 သို့ ငွေလွှဲပြီး Slip ပို့ပါ။';
 }
 document.querySelectorAll('.currencyBtn').forEach(b=>b.addEventListener('click',()=>{currency=b.dataset.currency;localStorage.setItem('kz_currency',currency);updateCurrencyUI();}));
 function changeWeekly(delta,e){
@@ -116,7 +116,7 @@ function makeOrder(){
   if(!file)return alert('ငွေလွှဲပြေစာ (Slip) ပုံထည့်ပါ။');
   const id='KZ'+Date.now().toString().slice(-7);
   const playerName=window.kzPlayerName || document.getElementById('playerName').textContent || 'မစစ်ရသေးပါ';
-  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 K PLUS: Kyaw Zin Thin\nAccount: 1533820073\n🧾 Slip: ${file.name}`;
+  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 Payment: ${currency==='THB'?'Thai QR / PromptPay — 153382073':'MMK — 09670555929'}\n🧾 Slip: ${file.name}`;
   document.getElementById('order').textContent=text;document.getElementById('order').style.display='block';
   localStorage.setItem('kz_last_order',text); saveOrderHistory({id,packageName:current.name,price:current.price,currency,displayPrice:money(current.price),uid,zone,playerName,time:new Date().toLocaleString('th-TH')});
 }
