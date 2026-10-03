@@ -39,22 +39,22 @@ const passes=[["WP 1 week",55],["Elite weekly pass",30],["Twilight weekly pass",
 const MMK_RATE=Number(localStorage.getItem('kz_thb_mmk_rate')||'110'); let currency=localStorage.getItem('kz_currency')||'THB'; let current={name:'',price:0};
 let weeklyQty=1;
 function money(v){return currency==='MMK' ? Math.round(v*MMK_RATE).toLocaleString('my-MM')+' MMK' : v.toLocaleString('en-US')+' THB';}
-function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});};return d}
+function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);};return d}
 dia.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
 const wpCard=document.getElementById('passes').firstElementChild;
 if(wpCard){
   wpCard.innerHTML='<div class="icon">🎟️</div><div class="name">WP 1 week</div><div class="price" id="wpPrice">'+money(55)+'</div><div class="qtybox"><button type="button" class="qtybtn" id="wpMinus">−</button><div class="qtynum"><span id="wpQty">1</span> ပတ်</div><button type="button" class="qtybtn" id="wpPlus">+</button></div><div class="qtyhint">1 ပတ်မှ 10 ပတ်အထိ စိတ်ကြိုက်ရွေးပါ</div><button type="button" class="buy" id="wpSelect" style="width:100%;border:0;cursor:pointer">ရွေးမယ်</button>';
-  wpCard.onclick=(e)=>{if(e.target.closest('.qtybtn')||e.target.closest('#wpSelect'))return;selectWeekly();};
+  wpCard.onclick=(e)=>{if(e.target.closest('.qtybtn')||e.target.closest('#wpSelect'))return;selectWeekly(false);};
   document.getElementById('wpMinus').addEventListener('click',(e)=>changeWeekly(-1,e));
   document.getElementById('wpPlus').addEventListener('click',(e)=>changeWeekly(1,e));
-  document.getElementById('wpSelect').addEventListener('click',(e)=>{e.stopPropagation();selectWeekly();});
+  document.getElementById('wpSelect').addEventListener('click',(e)=>{e.stopPropagation();selectWeekly(false);});
 }
-function selectWeekly(){
+function selectWeekly(shouldScroll=false){
   document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));
   wpCard.classList.add('selected');
   current={name:'WP '+weeklyQty+' weeks',price:55*weeklyQty};
   document.getElementById('selected').textContent='🎟️ '+current.name+' — '+money(current.price);
-  document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});
+  if(shouldScroll) document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function updateCurrencyUI(){
   document.querySelectorAll('.currencyBtn').forEach(b=>b.classList.toggle('active',b.dataset.currency===currency));
@@ -71,7 +71,7 @@ function changeWeekly(delta,e){
   weeklyQty=Math.max(1,Math.min(10,weeklyQty+delta));
   document.getElementById('wpQty').textContent=weeklyQty;
   document.getElementById('wpPrice').textContent=money(55*weeklyQty);
-  selectWeekly();
+  selectWeekly(false);
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');['dia','double','pass'].forEach(k=>document.getElementById(k+'Section').style.display=t.dataset.tab===k?'block':'none')});
 document.getElementById('search').oninput=e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('.product').forEach(x=>x.style.display=x.dataset.search.includes(q)?'block':'none')};
