@@ -10,8 +10,12 @@ const crypto = require('crypto');
  * body before accepting the event. The endpoint intentionally does NOT
  * expose any API secret to the browser.
  */
-function hmac(body, secret) {
+function hmacHex(body, secret) {
   return crypto.createHmac('sha256', secret).update(body, 'utf8').digest('hex');
+}
+
+function hmacBase64(body, secret) {
+  return crypto.createHmac('sha256', secret).update(body, 'utf8').digest('base64');
 }
 
 function safeEqual(a, b) {
@@ -56,11 +60,12 @@ module.exports = async (req, res) => {
   try {
     const rawBody = await readRawBody(req);
     const supplied = getSignature(req);
-    const expected = hmac(rawBody, secret);
-
-    // Accept an optional "sha256=" prefix if the panel sends it.
     const normalized = String(supplied).replace(/^sha256=/i, '').trim();
-    if (!safeEqual(normalized, expected)) {
+    const expectedHex = hmacHex(rawBody, secret);
+    const expectedBase64 = hmacBase64(rawBody, secret);
+    // Accept the documented HMAC-SHA256 hex form and base64 form used by
+    // webhook senders, with or without a sha256= prefix.
+    if (!safeEqual(normalized, expectedHex) && !safeEqual(normalized, expectedBase64)) {
       return res.status(401).json({ ok: false, error: 'Invalid webhook signature' });
     }
 
