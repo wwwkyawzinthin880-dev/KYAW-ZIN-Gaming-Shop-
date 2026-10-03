@@ -42,14 +42,18 @@ function card(name,price,icon){const d=document.createElement('div');d.className
 dia.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
 const wpCard=document.getElementById('passes').firstElementChild;
 if(wpCard){
-  wpCard.innerHTML='<div class="icon">🎟️</div><div class="name">WP 1 week</div><div class="price" id="wpPrice">55 Baht</div><div class="qtybox"><button class="qtybtn" onclick="changeWeekly(-1,event)">−</button><div class="qtynum"><span id="wpQty">1</span> ပတ်</div><button class="qtybtn" onclick="changeWeekly(1,event)">+</button></div><div class="qtyhint">1 ပတ်မှ 10 ပတ်အထိ စိတ်ကြိုက်ရွေးပါ</div><div class="buy">ရွေးမယ်</div>';
-  wpCard.onclick=(e)=>{if(e.target.closest('.qtybtn'))return;selectWeekly();};
+  wpCard.innerHTML='<div class="icon">🎟️</div><div class="name">WP 1 week</div><div class="price" id="wpPrice">55 Baht</div><div class="qtybox"><button type="button" class="qtybtn" id="wpMinus">−</button><div class="qtynum"><span id="wpQty">1</span> ပတ်</div><button type="button" class="qtybtn" id="wpPlus">+</button></div><div class="qtyhint">1 ပတ်မှ 10 ပတ်အထိ စိတ်ကြိုက်ရွေးပါ</div><button type="button" class="buy" id="wpSelect" style="width:100%;border:0;cursor:pointer">ရွေးမယ်</button>';
+  wpCard.onclick=(e)=>{if(e.target.closest('.qtybtn')||e.target.closest('#wpSelect'))return;selectWeekly();};
+  document.getElementById('wpMinus').addEventListener('click',(e)=>changeWeekly(-1,e));
+  document.getElementById('wpPlus').addEventListener('click',(e)=>changeWeekly(1,e));
+  document.getElementById('wpSelect').addEventListener('click',(e)=>{e.stopPropagation();selectWeekly();});
 }
 function selectWeekly(){
   document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));
   wpCard.classList.add('selected');
   current={name:'WP '+weeklyQty+' weeks',price:55*weeklyQty};
-  document.getElementById('selected').textContent=current.name+' — '+current.price+' Baht';
+  document.getElementById('selected').textContent='🎟️ '+current.name+' — '+current.price+' Baht';
+  document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function changeWeekly(delta,e){
   if(e)e.stopPropagation();
