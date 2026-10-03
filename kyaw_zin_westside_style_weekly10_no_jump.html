@@ -30,6 +30,7 @@
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
 <div class="paybox"><div class="bank"><b>💳 K PLUS (KBank)</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
 <button class="messenger" onclick="sendMessenger()">💬 Messenger မှာ Order + Slip ပို့မယ်</button><div class="order" id="order"></div></section>
+<section class="checkout" id="history"><h2>📋 Order မှတ်တမ်း</h2><div id="historyList"><div class="note">ဒီဖုန်း/Browser မှာ တင်ထားတဲ့ Order မှတ်တမ်းတွေ ဒီနေရာမှာ ပြပါမယ်။</div></div></section>
 <div class="footer">© 2026 KYAW ZIN Gaming Shop • Fast • Safe • Trusted<br><a href="terms.html" style="color:#6957ff;text-decoration:none">Terms & Conditions</a> · <a href="refund-policy.html" style="color:#6957ff;text-decoration:none">Refund Policy</a> · <a href="privacy-policy.html" style="color:#6957ff;text-decoration:none">Privacy Policy</a></div></main>
 <script>
 const dia=[[55,35],[86,46],[165,85],[172,90],[257,125],[275,135],[344,175],[447,220],[514,247],[565,270],[620,300],[706,330],[730,355],[822,395],[981,465],[1130,540],[1271,600],[1412,660],[2195,995],[3688,1670],[5532,2500],[9288,4150]];
@@ -102,8 +103,23 @@ function makeOrder(){
   const playerName=window.kzPlayerName || document.getElementById('playerName').textContent || 'မစစ်ရသေးပါ';
   const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nPrice: ${current.price} Baht\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 K PLUS: Kyaw Zin Thin\nAccount: 1533820073\n🧾 Slip: ${file.name}`;
   document.getElementById('order').textContent=text;document.getElementById('order').style.display='block';
-  localStorage.setItem('kz_last_order',text);
+  localStorage.setItem('kz_last_order',text); saveOrderHistory({id,packageName:current.name,price:current.price,uid,zone,playerName,time:new Date().toLocaleString('th-TH')});
 }
+function saveOrderHistory(o){
+  const key='kz_order_history';
+  const list=JSON.parse(localStorage.getItem(key)||'[]');
+  list.unshift(o);
+  localStorage.setItem(key,JSON.stringify(list.slice(0,20)));
+  renderOrderHistory();
+}
+function renderOrderHistory(){
+  const el=document.getElementById('historyList'); if(!el)return;
+  const list=JSON.parse(localStorage.getItem('kz_order_history')||'[]');
+  if(!list.length){el.innerHTML='<div class="note">Order မှတ်တမ်း မရှိသေးပါ။</div>';return;}
+  el.innerHTML=list.map(o=>'<div style="background:#f8f9fc;border:1px solid var(--line);border-radius:12px;padding:11px;margin:8px 0"><b>'+o.id+'</b><br>🎟️ '+o.packageName+' — <b>'+o.price+' Baht</b><br>🎮 '+o.playerName+' · '+o.uid+' / '+o.zone+'<br><span class="note">🕒 '+o.time+'</span></div>').join('');
+}
+renderOrderHistory();
+
 function sendMessenger(){
   const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim();
   const file=document.getElementById('slipFile').files[0];
