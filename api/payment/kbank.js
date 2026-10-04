@@ -43,7 +43,7 @@ module.exports=async(req,res)=>{
   params.set('amount',String(amountThb*100)); params.set('currency','THB');
   params.set('return_uri',String(data.return_uri||'https://kyaw-zin-gaming-shop.vercel.app/shop.html?payment=return&order='+encodeURIComponent(orderId)));
   params.set('source[type]','mobile_banking_kbank'); params.set('source[platform_type]','WEB');
-  params.set('webhook_endpoints[0]','https://kyaw-zin-gaming-shop.vercel.app/api/payment/omise-webhook');
+  params.set('webhook_endpoints[0]',String(process.env.PUBLIC_BASE_URL||'https://kyaw-zin-gaming-shop.vercel.app')+'/api/payment/omise-webhook');
   params.set('description','KYAW ZIN Gaming Shop - '+orderId);
   params.set('metadata[order_id]',orderId); params.set('metadata[member_code]',memberCode); params.set('metadata[product_id]',String(productId));
   params.set('metadata[variation_id]',String(variation.variationId)); params.set('metadata[supplier_cost]',String(variation.supplierCost));
