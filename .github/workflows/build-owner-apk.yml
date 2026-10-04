@@ -19,19 +19,26 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.10.2"
-      - name: Build Owner APK
+      - name: Create release signing key
         working-directory: owner-apk
-        run: gradle :app:assembleDebug --no-daemon
-      - name: Upload Owner APK
+        run: |
+          keytool -genkeypair -v -keystore release.keystore -storepass "KZ-temp-release" -keypass "KZ-temp-release" -alias kyawzin -keyalg RSA -keysize 2048 -validity 3650 -dname "CN=KYAW ZIN Gaming Shop, OU=Owner, O=KYAW ZIN Gaming Shop, L=Bangkok, C=TH"
+      - name: Build signed release APK
+        working-directory: owner-apk
+        run: gradle :app:assembleRelease --no-daemon
+      - name: Verify APK signature
+        working-directory: owner-apk
+        run: $ANDROID_HOME/build-tools/35.0.0/apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
+      - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: KZ-Owner-APK
-          path: owner-apk/app/build/outputs/apk/debug/app-debug.apk
+          name: KZ-Owner-APK-Release
+          path: owner-apk/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
-      - name: Publish direct APK release
+      - name: Publish signed APK release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: owner-apk-v1.0.${{ github.run_number }}
-          name: Owner APK v1.0.${{ github.run_number }}
-          files: owner-apk/app/build/outputs/apk/debug/app-debug.apk
+          tag_name: owner-release-v1.5.${{ github.run_number }}
+          name: KYAW ZIN Owner APK v1.5.${{ github.run_number }}
+          files: owner-apk/app/build/outputs/apk/release/app-release.apk
           generate_release_notes: false
