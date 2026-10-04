@@ -168,7 +168,7 @@ async function sendMessenger(){
   const btn=document.querySelector('.messenger'); btn.disabled=true; btn.textContent='⏳ Order + Slip ပို့နေပါတယ်...';
   try{
     const base64=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
-    const r=await fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64,owner_order:{id:document.getElementById('order').textContent.match(/Order ID: (KZ\d+)/)?.[1]||('KZ'+Date.now()),packageName:current.name,currency,amountMMK:Math.round(current.price*MMK_RATE),uid,zone,playerName:window.kzPlayerName||document.getElementById('playerName').textContent||'',}})});
+    const r=await fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64,owner_order:{id:document.getElementById('order').textContent.match(/Order ID: (KZ\d+)/)?.[1]||('KZ'+Date.now()),packageName:current.name,currency,amountThb:Number(current.price),amountMMK:Math.round(current.price*MMK_RATE),uid,zone,playerName:window.kzPlayerName||document.getElementById('playerName').textContent||'',}})});
     const out=await r.json().catch(()=>({}));
     if(!r.ok||!out.ok) throw new Error(out.error||'ပို့မရပါ');
     alert('✅ Order + Slip ပုံကို Admin ဆီ ပို့ပြီးပါပြီ။');
