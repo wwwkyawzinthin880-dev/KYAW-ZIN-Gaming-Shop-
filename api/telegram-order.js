@@ -5,7 +5,7 @@ function json(res,status,data){return res.status(status).json(data);}
 module.exports = async (req,res)=>{
   if(req.method!=='POST') return json(res,405,{error:'POST only'});
   const token=process.env.TELEGRAM_BOT_TOKEN;
-  const chatId=process.env.TELEGRAM_ADMIN_CHAT_ID;
+  const chatId=process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID;
   if(!token||!chatId) return json(res,500,{error:'Telegram environment variables are not configured'});
   let data;
   try{ data=typeof req.body==='string'?JSON.parse(req.body||'{}'):(req.body||{}); }catch{return json(res,400,{error:'Invalid JSON'});}
