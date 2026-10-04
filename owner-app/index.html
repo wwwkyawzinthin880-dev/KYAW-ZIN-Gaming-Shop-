@@ -21,7 +21,7 @@ main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-c
 </div>
 <div class="card" style="margin-top:12px"><div class="label">ယနေ့ အမြတ်</div><div class="value profit">฿ 0</div></div>
 <div class="section">🛒 Order စာရင်း</div>
-<div class="card"><div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div></div>
+<div class="card" id="ordersBox"><div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div></div>
 <div class="section">📊 အမြတ်တွက်ပုံ</div>
 <div class="card"><div class="small">Customer ပေးငွေ − LioGames supplier အရင်း − payment fee = အမြတ်</div></div>
 </main>
@@ -51,6 +51,9 @@ async function loadData(){
   document.querySelectorAll('.value')[2].textContent='฿ '+Number(d.supplierCost||0).toLocaleString();
   document.querySelectorAll('.value')[3].textContent='฿ '+Number(d.paymentFee||0).toLocaleString();
   document.querySelector('.profit').textContent='฿ '+Number(d.profit||0).toLocaleString();
+  const box=document.getElementById('ordersBox');
+  const items=Array.isArray(d.items)?d.items:[];
+  box.innerHTML=items.length?items.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' ('+String(x.serverId||'')+')</div><div class="small">ရောင်း ฿'+Number(x.customerAmount||0).toLocaleString()+' · အရင်း ฿'+Number(x.supplierCost||0).toLocaleString()+' · Fee ฿'+Number(x.paymentFee||0).toLocaleString()+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join(''):'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
  }catch(e){}
 }
 checkSession();
