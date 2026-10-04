@@ -46,7 +46,7 @@ const passes=[["WP 1 week",55],["Elite weekly pass",30],["Twilight weekly pass",
 let currency='THB'; let current={name:'',price:0};
 let weeklyQty=1;
 function money(v){return v.toLocaleString('en-US')+' THB';}
-function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});};return d}
+function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);};return d}
 dia.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
 const wpCard=document.getElementById('passes').firstElementChild;
 if(wpCard){
@@ -67,7 +67,7 @@ function selectWeekly(){
   current={name:'WP '+weeklyQty+' weeks',price:55*weeklyQty};
   document.getElementById('selected').textContent='🎟️ '+current.name+' — '+money(current.price);
   renderWPChoices();
-  document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});
+  
 }
 function updateCurrencyUI(){
   document.querySelectorAll('.currencyBtn').forEach(b=>b.classList.toggle('active',b.dataset.currency===currency));
