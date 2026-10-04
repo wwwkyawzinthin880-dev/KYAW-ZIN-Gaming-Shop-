@@ -13,7 +13,7 @@
 <header class="top"><div class="bar"><div><div class="brand">🎮 KYAW ZIN Gaming Shop</div><div class="mini">MLBB Diamond • Pass • THB</div></div><div class="wallet">🇹🇭 THB</div></div></header>
 <main class="wrap">
 <input class="search" id="search" placeholder="🔎 Diamond / Pass ရှာရန်...">
-<div class="rateNote" id="rateNote">💱 1 THB = 110 MMK (နှုန်းကို ဒီဖုန်းမှာ ပြောင်းနိုင်ပါတယ်)</div><div class="tabs"><button class="tab active" data-tab="dia">💎 Diamond</button><button class="tab" data-tab="double">✨ Double</button><button class="tab" data-tab="pass">🎟️ Pass</button></div>
+<div class="tabs"><button class="tab active" data-tab="dia">💎 Diamond</button><button class="tab" data-tab="double">✨ Double</button><button class="tab" data-tab="pass">🎟️ Pass</button></div>
 <section class="section" id="diaSection"><div class="title"><h2>💎 Diamond Packages</h2><span>ရွေးပြီး Order လုပ်ပါ</span></div><div class="grid" id="dia"></div></section>
 <section class="section" id="doubleSection" style="display:none"><div class="title"><h2>✨ Double Diamond</h2><span>Bonus packages</span></div><div class="grid" id="double"></div></section>
 <section class="section" id="passSection" style="display:none"><div class="title"><h2>🎟️ Pass & Package</h2><span>Weekly / Monthly</span></div><div class="grid" id="passes"></div></section>
@@ -80,8 +80,8 @@ function updateCurrencyUI(){
   document.getElementById('wpPrice').textContent=money(55*weeklyQty);
   renderWPChoices();
   if(current.name) document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price);
-  document.getElementById('rateNote').textContent='💱 1 THB = '+MMK_RATE.toLocaleString('en-US')+' MMK';
-  document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>🏦 KBank — THB Payment</b><br>Account Name — <b>MR. KYAW ZIN THIN</b><br>Account No. — <strong>1533820073</strong><br><span class="note">KBank အကောင့်ထဲသို့ ထိုင်းဘတ်ငွေ လွှဲပြီး Slip ပို့ပါ။</span>' : '<b>🇲🇲 MMK Payment</b><br><div style="background:#fff;border-radius:10px;padding:12px;margin:10px 0;text-align:center;font-size:22px">📱 09670555929</div>Account Name — <b>Kyaw Zin Thin</b><br>KBZPay / WavePay — <strong>09670555929</strong><br><span class="note">မြန်မာငွေဖြင့် ငွေလွှဲပြီး Slip ပို့ပါ။</span>';
+  
+  document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>🏦 KBank — THB Payment</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong><br><span class="note">KBank အကောင့်ထဲသို့ ထိုင်းဘတ်ငွေ လွှဲပြီး Slip ပို့ပါ။</span>' : '<b>🇲🇲 MMK Payment</b><br><div style="background:#fff;border-radius:10px;padding:12px;margin:10px 0;text-align:center;font-size:22px">📱 09670555929</div>Account Name — <b>Kyaw Zin Thin</b><br>KBZPay / WavePay — <strong>09670555929</strong><br><span class="note">မြန်မာငွေဖြင့် ငွေလွှဲပြီး Slip ပို့ပါ။</span>';
   document.getElementById('paymentNote').textContent=currency==='THB'?'KBank အကောင့်သို့ ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။':'MMK ဈေးနှုန်းကို 1 THB = '+MMK_RATE+' MMK နှုန်းဖြင့်တွက်ထားပါတယ်။ 09670555929 သို့ ငွေလွှဲပြီး Slip ပို့ပါ။';
 }
 document.querySelectorAll('.currencyBtn').forEach(b=>b.addEventListener('click',()=>{currency=b.dataset.currency;localStorage.setItem('kz_currency',currency);updateCurrencyUI();}));
