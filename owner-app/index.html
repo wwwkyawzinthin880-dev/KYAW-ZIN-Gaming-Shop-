@@ -38,12 +38,16 @@ async function checkSession(){
  catch(e){}
 }
 async function login(){
- const p=document.getElementById('pin').value;
+ const p=document.getElementById('pin').value.trim();
  if(!p)return alert('Owner PIN ထည့်ပါ');
- const r=await fetch('/api/owner/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({password:p})});
- const d=await r.json();
- if(!r.ok){alert(d.error||'Login မအောင်မြင်ပါ');return}
- document.getElementById('pin').value='';loginBox.style.display='none';await loadData();
+ const btn=document.querySelector('.btn'); btn.disabled=true; btn.textContent='စစ်ဆေးနေသည်...';
+ try{
+  const r=await fetch('/api/owner/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',cache:'no-store',body:JSON.stringify({password:p})});
+  const text=await r.text(); let d={}; try{d=JSON.parse(text)}catch{}
+  if(!r.ok){alert(d.error||('Login မအောင်မြင်ပါ ('+r.status+')'));return}
+  document.getElementById('pin').value='';loginBox.style.display='none';await loadData();
+ }catch(e){alert('Server ကို ချိတ်မရသေးပါ။ Internet ပြန်စစ်ပြီး ထပ်နှိပ်ပါ။')}
+ finally{btn.disabled=false;btn.textContent='ဝင်မယ်';}
 }
 async function loadData(){
  try{
