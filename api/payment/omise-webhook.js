@@ -97,6 +97,18 @@ module.exports = async (req, res) => {
     body: lioRaw
   });
   const lioText = await lioRes.text();
-
+  if (lioRes.ok) {
+    try {
+      const {put}=require("@vercel/blob");
+      const supplierCost=Number(meta.supplier_cost||0);
+      const customerAmount=Number(charge.amount||0)/100;
+      const paymentFee=Number(charge.fee||0)/100;
+      const order={id:String(meta.order_id),createdAt:new Date().toISOString(),status:"paid",packageName:String(meta.package_name||""),userId:String(meta.user_id),serverId:String(meta.server_id),customerAmount,supplierCost,paymentFee,profit:customerAmount-supplierCost-paymentFee,currency:"THB",source:"KPLUS"};
+      let items=[];
+      try{const {download}=require("@vercel/blob");const r=await download("owner-data/orders.json");items=JSON.parse(await r.text());if(!Array.isArray(items))items=[]}catch{}
+      const idx=items.findIndex(x=>x.id===order.id); if(idx>=0)items[idx]={...items[idx],...order}; else items.unshift(order);
+      await put("owner-data/orders.json",JSON.stringify(items.slice(0,500)),{access:"private",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json"});
+    } catch(e) {}
+  }
   return res.status(lioRes.ok ? 200 : 502).send(lioText);
 };
