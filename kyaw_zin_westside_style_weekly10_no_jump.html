@@ -76,7 +76,8 @@ function updateCurrencyUI(){
   renderWPChoices();
   if(current.name) document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price);
   
-  document.getElementById('paymentInfo').innerHTML='<b>🏦 KBank — THB Payment</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong><br><span class="note">KBank အကောင့်ထဲသို့ ထိုင်းဘတ်ငွေ လွှဲပြီး Slip ပို့ပါ။</span>';\n  document.getElementById('paymentNote').textContent='KBank အကောင့်သို့ ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။';
+  document.getElementById('paymentInfo').innerHTML='<b>🏦 KBank — THB Payment</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong><br><span class="note">KBank အကောင့်ထဲသို့ ထိုင်းဘတ်ငွေ လွှဲပြီး Slip ပို့ပါ။</span>');
+  document.getElementById('paymentNote').textContent='KBank အကောင့်သို့ ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။';
 }
 document.querySelectorAll('.currencyBtn').forEach(b=>b.addEventListener('click',()=>{currency=b.dataset.currency;localStorage.setItem('kz_currency',currency);updateCurrencyUI();}));
 renderWPChoices();
