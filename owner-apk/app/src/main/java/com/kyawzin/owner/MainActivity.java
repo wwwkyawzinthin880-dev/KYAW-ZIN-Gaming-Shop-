@@ -17,7 +17,7 @@ public class MainActivity extends Activity { // KYAW ZIN Owner APK
         s.setDomStorageEnabled(true);
         s.setDatabaseEnabled(true);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("https://kyaw-zin-gaming-shop.vercel.app/owner-app/?apk=1");
+        webView.loadUrl("https://wwwkyawzinthin880-dev.github.io/KYAW-ZIN-Gaming-Shop-/owner-app/?apk=1");
         setContentView(webView);
     }
 
