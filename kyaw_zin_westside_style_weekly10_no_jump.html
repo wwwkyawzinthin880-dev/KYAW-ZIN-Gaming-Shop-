@@ -51,29 +51,42 @@ function card(name,price,icon){const d=document.createElement('div');d.className
 dia.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
 const wpCard=document.getElementById('passes').firstElementChild;
 if(wpCard){
-  wpCard.innerHTML='<div class="icon">🎟️</div><div class="name">WP 1 week</div><div class="price" id="wpPrice">'+money(55)+'</div><div class="qtybox"><button type="button" class="qtybtn" id="wpMinus">−</button><div class="qtynum"><span id="wpQty">1</span> ပတ်</div><button type="button" class="qtybtn" id="wpPlus">+</button></div><div class="qtyhint">1 ပတ်မှ 10 ပတ်အထိ စိတ်ကြိုက်ရွေးပါ</div><button type="button" class="buy" id="wpSelect" style="width:100%;border:0;cursor:pointer">ရွေးမယ်</button>';
+  wpCard.innerHTML='<div class="icon">🎟️</div><div class="name">WP 1 week</div><div class="price" id="wpPrice">'+money(55)+'</div><div class="qtybox"><button type="button" class="qtybtn" id="wpMinus">−</button><div class="qtynum"><span id="wpQty">1</span> ပတ်</div><button type="button" class="qtybtn" id="wpPlus">+</button></div><div id="wpChoices" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px"></div><div class="qtyhint">1 ပတ်မှ 10 ပတ်အထိ တိုက်ရိုက်ရွေးနိုင်ပါတယ်</div><button type="button" class="buy" id="wpSelect" style="width:100%;border:0;cursor:pointer">ရွေးမယ်</button>';
   wpCard.onclick=(e)=>{if(e.target.closest('.qtybtn')||e.target.closest('#wpSelect'))return;selectWeekly();};
   document.getElementById('wpMinus').addEventListener('click',(e)=>changeWeekly(-1,e));
   document.getElementById('wpPlus').addEventListener('click',(e)=>changeWeekly(1,e));
   document.getElementById('wpSelect').addEventListener('click',(e)=>{e.stopPropagation();selectWeekly();});
+}
+function renderWPChoices(){
+  const box=document.getElementById('wpChoices'); if(!box)return;
+  box.innerHTML='';
+  for(let n=1;n<=10;n++){
+    const b=document.createElement('button'); b.type='button'; b.textContent=n+'W';
+    b.style.cssText='border:1px solid #ded8ff;border-radius:9px;padding:8px 3px;background:'+(n===weeklyQty?'#6957ff':'#f7f5ff')+';color:'+(n===weeklyQty?'#fff':'#5947df')+';font-weight:900;cursor:pointer';
+    b.onclick=(e)=>{e.stopPropagation();weeklyQty=n;document.getElementById('wpQty').textContent=n;document.getElementById('wpPrice').textContent=money(55*n);renderWPChoices();selectWeekly();};
+    box.appendChild(b);
+  }
 }
 function selectWeekly(){
   document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));
   wpCard.classList.add('selected');
   current={name:'WP '+weeklyQty+' weeks',price:55*weeklyQty};
   document.getElementById('selected').textContent='🎟️ '+current.name+' — '+money(current.price);
+  renderWPChoices();
   document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function updateCurrencyUI(){
   document.querySelectorAll('.currencyBtn').forEach(b=>b.classList.toggle('active',b.dataset.currency===currency));
   document.querySelectorAll('.price[data-thb]').forEach(el=>el.textContent=money(Number(el.dataset.thb)));
   document.getElementById('wpPrice').textContent=money(55*weeklyQty);
+  renderWPChoices();
   if(current.name) document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price);
   document.getElementById('rateNote').textContent='💱 1 THB = '+MMK_RATE.toLocaleString('en-US')+' MMK';
   document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>🇹🇭 THB Payment — Thai QR / PromptPay</b><br><a href="thai-payment.html" target="_blank" style="display:block;text-align:center;background:#171923;color:#fff;padding:12px;border-radius:10px;text-decoration:none;margin:10px 0">📱 Thai QR ဖွင့်မယ်</a>Account Name — <b>MR. KYAW ZIN THIN</b><br>PromptPay — <strong>153382073</strong><br><span class="note">Thai QR နဲ့ ထိုင်းဘဏ်အကောင့်များမှ ငွေလွှဲနိုင်ပါတယ်။</span>' : '<b>🇲🇲 MMK Payment</b><br><div style="background:#fff;border-radius:10px;padding:12px;margin:10px 0;text-align:center;font-size:22px">📱 09670555929</div>Account Name — <b>Kyaw Zin Thin</b><br>KBZPay / WavePay — <strong>09670555929</strong><br><span class="note">မြန်မာငွေဖြင့် ငွေလွှဲပြီး Slip ပို့ပါ။</span>';
   document.getElementById('paymentNote').textContent=currency==='THB'?'Thai QR / PromptPay ဖြင့် ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။':'MMK ဈေးနှုန်းကို 1 THB = '+MMK_RATE+' MMK နှုန်းဖြင့်တွက်ထားပါတယ်။ 09670555929 သို့ ငွေလွှဲပြီး Slip ပို့ပါ။';
 }
 document.querySelectorAll('.currencyBtn').forEach(b=>b.addEventListener('click',()=>{currency=b.dataset.currency;localStorage.setItem('kz_currency',currency);updateCurrencyUI();}));
+renderWPChoices();
 function changeWeekly(delta,e){
   if(e)e.stopPropagation();
   weeklyQty=Math.max(1,Math.min(10,weeklyQty+delta));
