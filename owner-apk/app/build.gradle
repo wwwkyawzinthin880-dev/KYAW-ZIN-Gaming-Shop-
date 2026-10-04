@@ -6,7 +6,21 @@ android {
         applicationId 'com.kyawzin.owner7'
         minSdk 23
         targetSdk 35
-        versionCode 5
-        versionName '1.4'
+        versionCode 6
+        versionName '1.5'
+    }
+    signingConfigs {
+        release {
+            storeFile file("release.keystore")
+            storePassword System.getenv("KZ_KEYSTORE_PASSWORD") ?: "KZ-temp-release"
+            keyAlias "kyawzin"
+            keyPassword System.getenv("KZ_KEY_PASSWORD") ?: "KZ-temp-release"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
     }
 }
