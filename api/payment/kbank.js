@@ -31,7 +31,7 @@ async function getVariation(productId, packageName) {
   if (!best) throw new Error('No matching LioGames variation for ' + target + ' diamonds');
   const variationId = best.variation_id ?? best.id ?? best.variationId;
   if (!variationId) throw new Error('Variation ID missing');
-  return Number(variationId);
+  const supplierCost = Number(best.price ?? best.cost ?? best.sell_price ?? best.amount_thb ?? best.retail_price ?? 0);\n  return { variationId:Number(variationId), supplierCost:Number.isFinite(supplierCost)?supplierCost:0 };
 }
 
 module.exports = async (req, res) => {
@@ -73,7 +73,7 @@ module.exports = async (req, res) => {
   params.set('metadata[order_id]', orderId);
   params.set('metadata[member_code]', memberCode);
   params.set('metadata[product_id]', String(productId));
-  params.set('metadata[variation_id]', String(variationId));
+  params.set('metadata[variation_id]', String(variation.variationId));\n  params.set('metadata[supplier_cost]', String(variation.supplierCost));
   params.set('metadata[user_id]', userId);
   params.set('metadata[server_id]', serverId);
   params.set('metadata[package_name]', packageName);
@@ -96,7 +96,7 @@ module.exports = async (req, res) => {
       authorize_uri: out.authorize_uri,
       expires_at: out.expires_at,
       amount_thb: amountThb,
-      variation_id: variationId
+      variation_id: variation.variationId,\n      supplier_cost: variation.supplierCost
     });
   } catch {
     return res.status(502).json({ error: 'Omise request failed' });
