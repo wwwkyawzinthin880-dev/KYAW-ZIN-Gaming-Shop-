@@ -14,7 +14,11 @@ main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-c
 <header><div style="display:flex;align-items:center;gap:12px"><img src="../icon.svg" alt="logo" style="width:48px;height:48px;border-radius:14px;background:#fff;padding:4px"><div><h1>KYAW ZIN Owner</h1><p>Sales & Profit Dashboard</p></div></div></header>
 <main>
 <div class="grid">
-<div class="card"><div class="label">ယနေ့ ရောင်းရငွေ</div><div class="value">฿ 0</div></div>
+<div class="card"><div class="label">🇹🇭 THB ရောင်းရငွေ</div><div class="value" id="thbSales">฿ 0</div></div>
+<div class="card"><div class="label">🇲🇲 MMK ရောင်းရငွေ</div><div class="value" id="mmkSales">0 MMK</div></div>
+<div class="card"><div class="label">🇹🇭 THB Orders</div><div class="value" id="thbOrders">0</div></div>
+<div class="card"><div class="label">🇲🇲 MMK Orders</div><div class="value" id="mmkOrders">0</div></div>
+<div class="card"><div class="label">ယနေ့ ရောင်းရငွေ (THB)</div><div class="value" id="oldSales">฿ 0</div></div>
 <div class="card"><div class="label">ယနေ့ အော်ဒါ</div><div class="value">0</div></div>
 <div class="card"><div class="label">Supplier အရင်း</div><div class="value">฿ 0</div></div>
 <div class="card"><div class="label">Payment Fee</div><div class="value">฿ 0</div></div>
@@ -46,7 +50,11 @@ async function loadData(){
   const r=await fetch('/api/owner/data',{credentials:'include',cache:'no-store'});
   if(r.status===401){loginBox.style.display='flex';return}
   const d=await r.json();
-  document.querySelectorAll('.value')[0].textContent='฿ '+Number(d.sales||0).toLocaleString();
+  document.getElementById('thbSales').textContent='฿ '+Number(d.thb?.sales||d.sales||0).toLocaleString();
+  document.getElementById('mmkSales').textContent=Number(d.mmk?.sales||0).toLocaleString()+' MMK';
+  document.getElementById('thbOrders').textContent=Number(d.thb?.orders||0).toLocaleString();
+  document.getElementById('mmkOrders').textContent=Number(d.mmk?.orders||0).toLocaleString();
+  document.getElementById('oldSales').textContent='฿ '+Number(d.thb?.sales||d.sales||0).toLocaleString();
   document.querySelectorAll('.value')[1].textContent=Number(d.orders||0).toLocaleString();
   document.querySelectorAll('.value')[2].textContent='฿ '+Number(d.supplierCost||0).toLocaleString();
   document.querySelectorAll('.value')[3].textContent='฿ '+Number(d.paymentFee||0).toLocaleString();
