@@ -169,7 +169,7 @@ async function sendToTelegram(){
   closeSendChoice(); btn.disabled=true; btn.textContent='⏳ Telegram သို့ ပို့နေပါတယ်...';
   try{
     const base64=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
-    const r=await fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64})});
+    const r=await fetch('https://kyaw-zin-gaming-shop.vercel.app/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64})});
     const out=await r.json().catch(()=>({}));
     if(!r.ok||!out.ok) throw new Error(out.error||'ပို့မရပါ');
     alert('✅ Order အချက်အလက် + Slip ပုံကို Telegram သို့ ပို့ပြီးပါပြီ။');
