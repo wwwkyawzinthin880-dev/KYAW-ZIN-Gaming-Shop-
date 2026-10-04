@@ -8,8 +8,13 @@ module.exports=async(req,res)=>{
   const expected=String(process.env.OWNER_LOGIN_SECRET);
   const a=Buffer.from(password),b=Buffer.from(expected);
   const ok=a.length===b.length&&crypto.timingSafeEqual(a,b);
-  if(!ok)return res.status(401).json({ok:false,error:"PIN မမှန်ပါ"});
-  setCookie(res,makeToken(),Math.floor(TTL/1000));return res.status(200).json({ok:true});
+  if(!ok){
+   if(String(req.headers.accept||"").includes("text/html")) return res.status(401).send("<meta name=\\"viewport\\" content=\\"width=device-width,initial-scale=1\\"><div style=\\"font-family:system-ui;padding:40px;text-align:center\\"><h2>PIN မမှန်ပါ</h2><p>Back နှိပ်ပြီး PIN ပြန်ထည့်ပါ။</p></div>");
+   return res.status(401).json({ok:false,error:"PIN မမှန်ပါ"});
+  }
+  setCookie(res,makeToken(),Math.floor(TTL/1000));
+  if(String(req.headers.accept||"").includes("text/html")) return res.redirect(303,"/owner-app/?login=1");
+  return res.status(200).json({ok:true});
  }
  if(req.method==="GET")return res.status(200).json({ok:valid(req)});
  if(req.method==="DELETE"){setCookie(res,"",0);return res.status(200).json({ok:true});}
