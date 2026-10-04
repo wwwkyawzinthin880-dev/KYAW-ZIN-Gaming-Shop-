@@ -10,8 +10,8 @@ module.exports=async(req,res)=>{
  if(!valid(req))return res.status(401).json({ok:false,error:"Unauthorized"});
  const items=await readOrders();
  const today=new Date().toISOString().slice(0,10);
- const day=items.filter(x=>String(x.createdAt||"").slice(0,10)===today && ['paid','completed','delivered'].includes(String(x.status||'').toLowerCase()));
- const pending=items.filter(x=>!['paid','completed','delivered'].includes(String(x.status||'').toLowerCase())).slice(0,50);
+ const day=items.filter(x=>String(x.createdAt||"").slice(0,10)===today && ['paid','completed','delivered','top-up sent','top-up completed'].includes(String(x.status||'').toLowerCase()));
+ const pending=items.filter(x=>!['paid','completed','delivered','top-up sent','top-up completed'].includes(String(x.status||'').toLowerCase())).slice(0,50);
  const thb=day.filter(x=>String(x.currency||'THB')==='THB');
  const mmk=day.filter(x=>String(x.currency||'')==='MMK');
  const sum=(arr,k)=>arr.reduce((a,x)=>a+Number(x[k]||0),0);
