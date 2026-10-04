@@ -1,8 +1,8 @@
-const {put,download}=require("@vercel/blob");
+const {put,download,list}=require("@vercel/blob");
 const {valid}=require("./_auth");
 const KEY="owner-data/orders.json";
 async function readOrders(){
- try{const r=await download(KEY);const t=await r.text();const d=JSON.parse(t);return Array.isArray(d)?d:[]}
+ try{const q=await list({prefix:KEY,limit:1}); if(!q.blobs?.length)return []; const r=await download(q.blobs[0].url);const t=await r.text();const d=JSON.parse(t);return Array.isArray(d)?d:[]}
  catch{return []}
 }
 async function saveOrders(items){
