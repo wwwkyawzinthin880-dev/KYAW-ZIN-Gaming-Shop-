@@ -14,7 +14,7 @@ public class MainActivity extends Activity {
   s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setDatabaseEnabled(true);
   s.setLoadWithOverviewMode(true); s.setUseWideViewPort(true);
   webView.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){return false;}});
-  webView.loadUrl("https://wwwkyawzinthin880-dev.github.io/KYAW-ZIN-Gaming-Shop-/");
+  webView.loadUrl("https://wwwkyawzinthin880-dev.github.io/KYAW-ZIN-Gaming-Shop-/?v=20261004-1");
   setContentView(webView);
  }
  @Override public void onBackPressed(){if(webView!=null&&webView.canGoBack())webView.goBack();else super.onBackPressed();}
