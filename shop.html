@@ -144,7 +144,7 @@ async function payWithKPlus(){
   const btn=document.querySelector('.kpay'); btn.disabled=true; btn.textContent='⏳ Payment စာမျက်နှာဖွင့်နေပါတယ်...';
   const orderId='KZ'+Date.now().toString().slice(-9);
   try{
-    const r=await fetch('/api/payment/kbank',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch('https://kyaw-zin-gaming-shop.vercel.app/api/payment/kbank',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       amount_thb:current.price,package_name:current.name,order_id:orderId,user_id:uid,server_id:zone,product_id:65482,
       return_uri:window.location.origin+window.location.pathname+'?payment=return&order='+encodeURIComponent(orderId)
     })});
