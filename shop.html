@@ -135,7 +135,7 @@ function makeOrder(){
   if(!window.kzPlayerVerified || !window.kzPlayerName)return alert('🎮 Game Name ကို အရင် Auto စစ်ပြီး အတည်ပြုပါ။ User ID / Zone ID မှန်ကန်ရပါမယ်။');
   const id='KZ'+Date.now().toString().slice(-7);
   const playerName=window.kzPlayerName || document.getElementById('playerName').textContent || 'မစစ်ရသေးပါ';
-  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 Payment: KBank — Kyaw Zin Thin — 1533820073\n🧾 Slip: ${file.name}`;
+  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n🧾 Slip: ${file.name}`;
   document.getElementById('order').textContent=text;document.getElementById('order').style.display='block';
   localStorage.setItem('kz_last_order',text); 
 }
@@ -193,7 +193,7 @@ async function sendToMessenger(){
 </style><div class="contact-float" aria-label="ဆက်သွယ်ရန်">
 <button class="contact-main" type="button" onclick="toggleContactMenu()" aria-label="ဆက်သွယ်ရန်">💬</button>
 <div class="contact-menu" id="contactMenu">
-<a class="contact-btn tg" href="https://t.me/KYAWZINDiamondShop" target="_blank" rel="noopener">✈️ Telegram</a>
+<a class="contact-btn tg" href="https://t.me/KyawZindiamondshopbot" target="_blank" rel="noopener">✈️ Telegram</a>
 <a class="contact-btn ms" href="https://www.facebook.com/share/1CHUy9evjj/" target="_blank" rel="noopener">💬 Messenger</a>
 </div>
 </div>
