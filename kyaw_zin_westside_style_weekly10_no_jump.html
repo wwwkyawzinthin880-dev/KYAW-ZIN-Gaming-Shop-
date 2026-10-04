@@ -10,10 +10,10 @@
 @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.brand{font-size:19px}.price{font-size:16px}}
 </style></head>
 <body>
-<header class="top"><div class="bar"><div><div class="brand">🎮 KYAW ZIN Gaming Shop</div><div class="mini">MLBB Diamond • Pass • THB + MMK</div></div><div class="wallet">🇹🇭 THB</div></div></header>
+<header class="top"><div class="bar"><div><div class="brand">🎮 KYAW ZIN Gaming Shop</div><div class="mini">MLBB Diamond • Pass • THB</div></div><div class="wallet">🇹🇭 THB</div></div></header>
 <main class="wrap">
 <input class="search" id="search" placeholder="🔎 Diamond / Pass ရှာရန်...">
-<div class="currencyRow"><button type="button" class="currencyBtn active" data-currency="THB">🇹🇭 THB</button><button type="button" class="currencyBtn" data-currency="MMK">🇲🇲 MMK</button></div><div class="rateNote" id="rateNote">💱 1 THB = 110 MMK (နှုန်းကို ဒီဖုန်းမှာ ပြောင်းနိုင်ပါတယ်)</div><div class="tabs"><button class="tab active" data-tab="dia">💎 Diamond</button><button class="tab" data-tab="double">✨ Double</button><button class="tab" data-tab="pass">🎟️ Pass</button></div>
+<div class="rateNote" id="rateNote">💱 1 THB = 110 MMK (နှုန်းကို ဒီဖုန်းမှာ ပြောင်းနိုင်ပါတယ်)</div><div class="tabs"><button class="tab active" data-tab="dia">💎 Diamond</button><button class="tab" data-tab="double">✨ Double</button><button class="tab" data-tab="pass">🎟️ Pass</button></div>
 <section class="section" id="diaSection"><div class="title"><h2>💎 Diamond Packages</h2><span>ရွေးပြီး Order လုပ်ပါ</span></div><div class="grid" id="dia"></div></section>
 <section class="section" id="doubleSection" style="display:none"><div class="title"><h2>✨ Double Diamond</h2><span>Bonus packages</span></div><div class="grid" id="double"></div></section>
 <section class="section" id="passSection" style="display:none"><div class="title"><h2>🎟️ Pass & Package</h2><span>Weekly / Monthly</span></div><div class="grid" id="passes"></div></section>
@@ -28,7 +28,7 @@
 <div id="slipPreview" style="display:none;margin-top:10px"><img id="slipImg" alt="Slip preview" style="width:100%;max-height:300px;object-fit:contain;border-radius:12px;cursor:pointer"></div>
 </div>
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
-<div class="paybox"><div class="bank" id="paymentInfo"><b>🏦 KBank</b><br>Account Name — <b>MR. KYAW ZIN THIN</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
+<div class="paybox"><div class="bank" id="paymentInfo"><b>🏦 KBank</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
 <button class="messenger" type="button" onclick="openSendChoice()">📤 Order + Slip ပို့မယ်</button>
 <div id="sendChoice" style="display:none;position:fixed;inset:0;background:#0009;z-index:2147483646;align-items:center;justify-content:center;padding:18px">
 <div style="width:100%;max-width:360px;background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 40px #0006">
@@ -44,7 +44,7 @@
 const dia=[[55,35],[86,46],[165,85],[172,90],[257,125],[275,135],[344,175],[447,220],[514,247],[565,270],[620,300],[706,330],[730,355],[822,395],[981,465],[1130,540],[1271,600],[1412,660],[2195,995],[3688,1670],[5532,2500],[9288,4150]];
 const doubles=[["50 + 50",35],["150 + 150",85],["250 + 250",135],["500 + 500",270]];
 const passes=[["WP 1 week",55],["Elite weekly pass",30],["Twilight weekly pass",280],["Epic Monthly package (once)",145]];
-const MMK_RATE=Number(localStorage.getItem('kz_thb_mmk_rate')||'110'); let currency=localStorage.getItem('kz_currency')||'THB'; let current={name:'',price:0};
+const MMK_RATE=Number(localStorage.getItem('kz_thb_mmk_rate')||'110'); let currency='THB'; let current={name:'',price:0};
 let weeklyQty=1;
 function money(v){return currency==='MMK' ? Math.round(v*MMK_RATE).toLocaleString('my-MM')+' MMK' : v.toLocaleString('en-US')+' THB';}
 function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});};return d}
@@ -141,7 +141,7 @@ function makeOrder(){
   if(!window.kzPlayerVerified || !window.kzPlayerName)return alert('🎮 Game Name ကို အရင် Auto စစ်ပြီး အတည်ပြုပါ။ User ID / Zone ID မှန်ကန်ရပါမယ်။');
   const id='KZ'+Date.now().toString().slice(-7);
   const playerName=window.kzPlayerName || document.getElementById('playerName').textContent || 'မစစ်ရသေးပါ';
-  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 Payment: ${currency==='THB'?'KBank — 1533820073':'MMK — 09670555929'}\n🧾 Slip: ${file.name}`;
+  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 Payment: KBank — Kyaw Zin Thin — 1533820073\n🧾 Slip: ${file.name}`;
   document.getElementById('order').textContent=text;document.getElementById('order').style.display='block';
   localStorage.setItem('kz_last_order',text); saveOrderHistory({id,packageName:current.name,price:current.price,currency,displayPrice:money(current.price),uid,zone,playerName,time:new Date().toLocaleString('th-TH')});
 }
