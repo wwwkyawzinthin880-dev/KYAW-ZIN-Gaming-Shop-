@@ -18,12 +18,13 @@ main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-c
 <div class="card"><div class="label">🇲🇲 MMK ရောင်းရငွေ</div><div class="value" id="mmkSales">0 MMK</div></div>
 <div class="card"><div class="label">🇹🇭 THB Orders</div><div class="value" id="thbOrders">0</div></div>
 <div class="card"><div class="label">🇲🇲 MMK Orders</div><div class="value" id="mmkOrders">0</div></div>
-<div class="card"><div class="label">ယနေ့ ရောင်းရငွေ (THB)</div><div class="value" id="oldSales">฿ 0</div></div>
-<div class="card"><div class="label">ယနေ့ အော်ဒါ</div><div class="value">0</div></div>
-<div class="card"><div class="label">Supplier အရင်း</div><div class="value">฿ 0</div></div>
-<div class="card"><div class="label">Payment Fee</div><div class="value">฿ 0</div></div>
+<div class="card"><div class="label">ယနေ့ ရောင်းရငွေ (THB)</div><div class="value" id="todaySales">฿ 0</div></div>
+<div class="card"><div class="label">ယနေ့ အော်ဒါ</div><div class="value" id="todayOrders">0</div></div>
+<div class="card"><div class="label">Supplier အရင်း</div><div class="value" id="todaySupplier">฿ 0</div></div>
+<div class="card"><div class="label">Payment Fee</div><div class="value" id="todayFee">฿ 0</div></div>
 </div>
-<div class="card" style="margin-top:12px"><div class="label">ယနေ့ အမြတ်</div><div class="value profit">฿ 0</div></div>
+<div class="card" style="margin-top:12px"><div class="label">ယနေ့ အမြတ်</div><div class="value profit" id="todayProfit">฿ 0</div></div>
+<div class="card" style="margin-top:12px"><div class="label">စုစုပေါင်း အမြတ် (မှတ်တမ်းရှိသမျှ)</div><div class="value profit" id="allProfit">฿ 0</div><div class="small" id="allSummary" style="margin-top:6px">Order 0 · Sales ฿0</div></div>
 <div class="section">🛒 Order စာရင်း</div>
 <div class="card" id="ordersBox"><div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div></div>
 <div class="section">📊 အမြတ်တွက်ပုံ</div>
@@ -69,15 +70,18 @@ async function loadData(){
   document.getElementById('mmkSales').textContent=Number(d.mmk?.sales||0).toLocaleString()+' MMK';
   document.getElementById('thbOrders').textContent=Number(d.thb?.orders||0).toLocaleString();
   document.getElementById('mmkOrders').textContent=Number(d.mmk?.orders||0).toLocaleString();
-  document.getElementById('oldSales').textContent='฿ '+Number(d.thb?.sales||d.sales||0).toLocaleString();
-  document.querySelectorAll('.value')[1].textContent=Number(d.orders||0).toLocaleString();
-  document.querySelectorAll('.value')[2].textContent='฿ '+Number(d.supplierCost||0).toLocaleString();
-  document.querySelectorAll('.value')[3].textContent='฿ '+Number(d.paymentFee||0).toLocaleString();
-  document.querySelector('.profit').textContent='฿ '+Number(d.profit||0).toLocaleString();
+  const t=d.today||d; const a=d.all||{};
+  document.getElementById('todaySales').textContent='฿ '+Number(t.thb?.sales||t.sales||0).toLocaleString();
+  document.getElementById('todayOrders').textContent=Number(t.orders||0).toLocaleString();
+  document.getElementById('todaySupplier').textContent='฿ '+Number(t.thb?.supplierCost||t.supplierCost||0).toLocaleString();
+  document.getElementById('todayFee').textContent='฿ '+Number(t.thb?.paymentFee||t.paymentFee||0).toLocaleString();
+  document.getElementById('todayProfit').textContent='฿ '+Number(t.thb?.profit||t.profit||0).toLocaleString();
+  document.getElementById('allProfit').textContent='฿ '+Number(a.thbProfit||0).toLocaleString();
+  document.getElementById('allSummary').textContent='Order '+Number(a.orders||0).toLocaleString()+' · Sales ฿'+Number(a.thbSales||0).toLocaleString();
   const box=document.getElementById('ordersBox');
-  const items=Array.isArray(d.items)?d.items:[]; const pending=Array.isArray(d.pending)?d.pending:[];
+  const items=Array.isArray(d.items)?d.items:[]; const pending=Array.isArray(d.pending)?d.pending:[]; const history=Array.isArray(d.history)?d.history:[];
   const pendingHtml=pending.map(x=>'<div class="row"><div><b>⏳ '+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / '+String(x.serverId||'')+'</div><div class="small">'+String(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' · '+String(x.source||'')+'</div><button class="btn" style="margin-top:8px;padding:10px;font-size:13px" onclick="topupOrder(\''+String(x.id||'')+'\')">💎 ငွေချေပြီးပြီ — Top Up လုပ်မယ်</button></div><span class="pill">'+String(x.status||'Pending')+'</span></div>').join('');
-  box.innerHTML=(pendingHtml?'<div class="small" style="padding:8px 0">⏳ Payment စစ်ဆေးရန်</div>'+pendingHtml:'')+(items.length?items.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' ('+String(x.serverId||'')+')</div><div class="small">ရောင်း ฿'+Number(x.customerAmount||0).toLocaleString()+' · အရင်း ฿'+Number(x.supplierCost||0).toLocaleString()+' · Fee ฿'+Number(x.paymentFee||0).toLocaleString()+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join('') :'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
+  const list=history.length?history:items; box.innerHTML=(pendingHtml?'<div class="small" style="padding:8px 0">⏳ Payment စစ်ဆေးရန်</div>'+pendingHtml:'')+(list.length?list.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / Zone '+String(x.serverId||'')+'</div><div class="small">'+String(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' · အရင်း '+Number(x.supplierCost||0).toLocaleString()+' · Fee '+Number(x.paymentFee||0).toLocaleString()+'</div><div class="small">'+String(x.createdAt||'')+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join('') :'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
  }catch(e){}
 }
 checkSession();
