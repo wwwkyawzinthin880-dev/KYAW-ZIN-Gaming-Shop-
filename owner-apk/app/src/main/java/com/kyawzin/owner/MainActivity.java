@@ -6,7 +6,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity { // KYAW ZIN Owner APK
     private WebView webView;
 
     @Override public void onCreate(Bundle b) {
