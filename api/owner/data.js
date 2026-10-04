@@ -10,10 +10,11 @@ module.exports=async(req,res)=>{
  if(!valid(req))return res.status(401).json({ok:false,error:"Unauthorized"});
  const items=await readOrders();
  const today=new Date().toISOString().slice(0,10);
- const day=items.filter(x=>String(x.createdAt||"").slice(0,10)===today);
+ const day=items.filter(x=>String(x.createdAt||"").slice(0,10)===today && ['paid','completed','delivered'].includes(String(x.status||'').toLowerCase()));
+ const pending=items.filter(x=>!['paid','completed','delivered'].includes(String(x.status||'').toLowerCase())).slice(0,50);
  const sum=k=>day.reduce((a,x)=>a+Number(x[k]||0),0);
  return res.status(200).json({
   ok:true,sales:sum("customerAmount"),orders:day.length,supplierCost:sum("supplierCost"),
-  paymentFee:sum("paymentFee"),profit:sum("profit"),items:day.slice(0,50)
+  paymentFee:sum("paymentFee"),profit:sum("profit"),items:day.slice(0,50),pending
  });
 };
