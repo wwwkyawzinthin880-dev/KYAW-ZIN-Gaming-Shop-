@@ -82,8 +82,8 @@ function updateCurrencyUI(){
   renderWPChoices();
   if(current.name) document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price);
   document.getElementById('rateNote').textContent='💱 1 THB = '+MMK_RATE.toLocaleString('en-US')+' MMK';
-  document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>🇹🇭 THB Payment — Thai QR / PromptPay</b><br><a href="thai-payment.html" target="_blank" style="display:block;text-align:center;background:#171923;color:#fff;padding:12px;border-radius:10px;text-decoration:none;margin:10px 0">📱 Thai QR ဖွင့်မယ်</a>Account Name — <b>MR. KYAW ZIN THIN</b><br>PromptPay — <strong>153382073</strong><br><span class="note">Thai QR နဲ့ ထိုင်းဘဏ်အကောင့်များမှ ငွေလွှဲနိုင်ပါတယ်။</span>' : '<b>🇲🇲 MMK Payment</b><br><div style="background:#fff;border-radius:10px;padding:12px;margin:10px 0;text-align:center;font-size:22px">📱 09670555929</div>Account Name — <b>Kyaw Zin Thin</b><br>KBZPay / WavePay — <strong>09670555929</strong><br><span class="note">မြန်မာငွေဖြင့် ငွေလွှဲပြီး Slip ပို့ပါ။</span>';
-  document.getElementById('paymentNote').textContent=currency==='THB'?'Thai QR / PromptPay ဖြင့် ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။':'MMK ဈေးနှုန်းကို 1 THB = '+MMK_RATE+' MMK နှုန်းဖြင့်တွက်ထားပါတယ်။ 09670555929 သို့ ငွေလွှဲပြီး Slip ပို့ပါ။';
+  document.getElementById('paymentInfo').innerHTML=currency==='THB' ? '<b>🏦 KBank — THB Payment</b><br>Account Name — <b>MR. KYAW ZIN THIN</b><br>Account No. — <strong>1533820073</strong><br><span class="note">KBank အကောင့်ထဲသို့ ထိုင်းဘတ်ငွေ လွှဲပြီး Slip ပို့ပါ။</span>' : '<b>🇲🇲 MMK Payment</b><br><div style="background:#fff;border-radius:10px;padding:12px;margin:10px 0;text-align:center;font-size:22px">📱 09670555929</div>Account Name — <b>Kyaw Zin Thin</b><br>KBZPay / WavePay — <strong>09670555929</strong><br><span class="note">မြန်မာငွေဖြင့် ငွေလွှဲပြီး Slip ပို့ပါ။</span>';
+  document.getElementById('paymentNote').textContent=currency==='THB'?'KBank အကောင့်သို့ ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။':'MMK ဈေးနှုန်းကို 1 THB = '+MMK_RATE+' MMK နှုန်းဖြင့်တွက်ထားပါတယ်။ 09670555929 သို့ ငွေလွှဲပြီး Slip ပို့ပါ။';
 }
 document.querySelectorAll('.currencyBtn').forEach(b=>b.addEventListener('click',()=>{currency=b.dataset.currency;localStorage.setItem('kz_currency',currency);updateCurrencyUI();}));
 renderWPChoices();
@@ -97,27 +97,30 @@ function changeWeekly(delta,e){
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');['dia','double','pass'].forEach(k=>document.getElementById(k+'Section').style.display=t.dataset.tab===k?'block':'none')});
 document.getElementById('search').oninput=e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('.product').forEach(x=>x.style.display=x.dataset.search.includes(q)?'block':'none')};
 let lookupTimer;
+window.kzPlayerName='';
+window.kzPlayerVerified=false;
 async function lookupPlayer(){
   const uid=document.getElementById('uid').value.trim();
   const zone=document.getElementById('zone').value.trim();
   const box=document.getElementById('playerbox');
   const nameEl=document.getElementById('playerName');
   const note=document.getElementById('lookupNote');
-  if(!uid || !zone){box.style.display='none';return;}
+  if(!uid || !zone){box.style.display='none';window.kzPlayerName='';window.kzPlayerVerified=false;return;}
+  window.kzPlayerName=''; window.kzPlayerVerified=false;
   box.style.display='flex'; nameEl.textContent='စစ်ဆေးနေသည်...'; note.textContent='Game ID နှစ်ခုကို စစ်ဆေးနေပါတယ်။';
   try{
     const r=await fetch(`https://api.isan.eu.org/nickname/ml?id=${encodeURIComponent(uid)}&server=${encodeURIComponent(zone)}&decode=false`,{cache:'no-store'});
     const data=await r.json();
     if(data && data.success && data.name){
-      nameEl.textContent=data.name; note.textContent='✅ Game Name အတည်ပြုပြီးပါပြီ။'; window.kzPlayerName=data.name;
+      nameEl.textContent=data.name; note.textContent='✅ Game Name အတည်ပြုပြီးပါပြီ။'; window.kzPlayerName=data.name; window.kzPlayerVerified=true;
     }else{
-      nameEl.textContent='မတွေ့ပါ'; note.textContent='❌ User ID / Zone ID မှန်မမှန် ပြန်စစ်ပါ။'; window.kzPlayerName='';
+      nameEl.textContent='မတွေ့ပါ'; note.textContent='❌ User ID / Zone ID မှန်မမှန် ပြန်စစ်ပါ။'; window.kzPlayerName=''; window.kzPlayerVerified=false;
     }
   }catch(e){
-    nameEl.textContent='စစ်မရသေးပါ'; note.textContent='⚠️ Name စစ်ရန် Internet လိုပါတယ်။ ID နှစ်ခုကို သေချာစစ်ပြီး ဆက်လုပ်နိုင်ပါတယ်။';
+    nameEl.textContent='စစ်မရသေးပါ'; note.textContent='⚠️ Game Name အတည်မပြုနိုင်သေးပါ။ Internet/API ကို ပြန်စစ်ပြီးမှ Order တင်ပါ။'; window.kzPlayerVerified=false;
   }
 }
-['uid','zone'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{clearTimeout(lookupTimer);lookupTimer=setTimeout(lookupPlayer,450)}));
+['uid','zone'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{window.kzPlayerVerified=false;window.kzPlayerName='';clearTimeout(lookupTimer);lookupTimer=setTimeout(lookupPlayer,450)}));
 
 document.getElementById('slipFile').addEventListener('change',function(){
   const file=this.files[0], preview=document.getElementById('slipPreview'), img=document.getElementById('slipImg');
@@ -135,9 +138,10 @@ function makeOrder(){
   if(!uid||!zone)return alert('MLBB User ID နဲ့ Zone ID နှစ်ခုလုံးထည့်ပါ။');
   const file=document.getElementById('slipFile').files[0];
   if(!file)return alert('ငွေလွှဲပြေစာ (Slip) ပုံထည့်ပါ။');
+  if(!window.kzPlayerVerified || !window.kzPlayerName)return alert('🎮 Game Name ကို အရင် Auto စစ်ပြီး အတည်ပြုပါ။ User ID / Zone ID မှန်ကန်ရပါမယ်။');
   const id='KZ'+Date.now().toString().slice(-7);
   const playerName=window.kzPlayerName || document.getElementById('playerName').textContent || 'မစစ်ရသေးပါ';
-  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 Payment: ${currency==='THB'?'Thai QR / PromptPay — 153382073':'MMK — 09670555929'}\n🧾 Slip: ${file.name}`;
+  const text=`🔔 NEW ORDER — KYAW ZIN GAMING SHOP\nOrder ID: ${id}\nPackage: ${current.name}\nCurrency: ${currency}\nPrice: ${money(current.price)}\n🎮 Game Name: ${playerName}\nMLBB User ID: ${uid}\nZone ID: ${zone}\n💳 Payment: ${currency==='THB'?'KBank — 1533820073':'MMK — 09670555929'}\n🧾 Slip: ${file.name}`;
   document.getElementById('order').textContent=text;document.getElementById('order').style.display='block';
   localStorage.setItem('kz_last_order',text); saveOrderHistory({id,packageName:current.name,price:current.price,currency,displayPrice:money(current.price),uid,zone,playerName,time:new Date().toLocaleString('th-TH')});
 }
@@ -161,6 +165,7 @@ function openSendChoice(){
   if(!uid||!zone)return alert('အရင် User ID နဲ့ Zone ID ထည့်ပါ။');
   if(!current.name)return alert('အရင် Package တစ်ခုရွေးပါ။');
   if(!file)return alert('ငွေလွှဲပြေစာ (Slip) ပုံကို အရင်ရွေးပါ။');
+  if(!window.kzPlayerVerified || !window.kzPlayerName)return alert('🎮 Game Name ကို အရင် Auto စစ်ပြီး အတည်ပြုပါ။ User ID / Zone ID မှန်ကန်ရပါမယ်။');
   if(!document.getElementById('order').textContent) makeOrder();
   document.getElementById('sendChoice').style.display='flex';
 }
