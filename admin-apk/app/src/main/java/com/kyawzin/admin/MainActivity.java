@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
                 return false;
             }
         });
-        webView.loadUrl("https://wwwkyawzinthin880-dev.github.io/KYAW-ZIN-Gaming-Shop-/admin.html");
+        webView.loadUrl("https://kyaw-zin-gaming-shop.vercel.app/owner-app/?apk=1");
         setContentView(webView);
     }
 
