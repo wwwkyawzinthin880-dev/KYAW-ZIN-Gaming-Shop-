@@ -41,14 +41,18 @@ module.exports = async (req, res) => {
   if (!secret || !memberCode) return res.status(500).json({ error: 'Payment environment is not configured' });
 
   const data = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-  const amountThb = Number(data.amount_thb);
+  const requestedAmount = Number(data.amount_thb);
   const packageName = String(data.package_name || '');
   const orderId = String(data.order_id || '');
   const userId = String(data.user_id || '');
   const serverId = String(data.server_id || '');
-  const productId = Number(data.product_id || 65482);
+  const productId = 65482;
+  const priceMap = {55:35,86:46,165:85,172:90,257:125,275:135,344:175,447:220,514:247,565:270,620:300,706:330,730:355,822:395,981:465,1130:540,1271:600,1412:660,2195:995,3688:1670,5532:2500,9288:4150};
 
-  if (!Number.isInteger(amountThb) || amountThb < 20) return res.status(400).json({ error: 'Invalid amount' });
+  const m = packageName.match(/^Dia\s+(\d+)/i);
+  if (!m || !priceMap[Number(m[1])]) return res.status(400).json({ error: 'K PLUS auto-payment is currently enabled for Diamond packages only' });
+  const amountThb = priceMap[Number(m[1])];
+  if (requestedAmount !== amountThb) return res.status(400).json({ error: 'Price mismatch' });
   if (!packageName || !orderId || !userId || !serverId) return res.status(400).json({ error: 'package_name, order_id, user_id and server_id are required' });
 
   let variationId;
