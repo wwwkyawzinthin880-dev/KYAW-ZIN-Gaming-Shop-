@@ -22,16 +22,33 @@ jobs:
         run: |
           yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null || true
           /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Create temporary release signing key
+        run: |
+          keytool -genkeypair -v \
+            -keystore kyawzin-release.jks \
+            -storepass kyawzin-release \
+            -keypass kyawzin-release \
+            -alias kyawzin \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=KYAW ZIN Gaming Shop, OU=Owner, O=KYAW ZIN, L=Bangkok, C=TH"
+          printf '%s\n' \
+            'storeFile=../kyawzin-release.jks' \
+            'storePassword=kyawzin-release' \
+            'keyAlias=kyawzin' \
+            'keyPassword=kyawzin-release' > admin-apk/keystore.properties
+          cp admin-apk/keystore.properties customer-apk/keystore.properties
       - name: Install Gradle
         run: |
           curl -L -o gradle.zip https://services.gradle.org/distributions/gradle-8.9-bin.zip
           unzip -q gradle.zip
-      - name: Build Admin APK
+      - name: Build Admin APK and AAB
         working-directory: admin-apk
-        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleRelease
-      - name: Build Customer APK
+        run: |
+          ../gradle-8.9/bin/gradle --no-daemon :app:assembleRelease :app:bundleRelease
+      - name: Build Customer APK and AAB
         working-directory: customer-apk
-        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleRelease
+        run: |
+          ../gradle-8.9/bin/gradle --no-daemon :app:assembleRelease :app:bundleRelease
       - uses: actions/upload-artifact@v4
         with:
           name: KZ-Admin-APK
@@ -40,3 +57,11 @@ jobs:
         with:
           name: KZ-Customer-APK
           path: customer-apk/app/build/outputs/apk/release/app-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KZ-Admin-AAB
+          path: admin-apk/app/build/outputs/bundle/release/app-release.aab
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KZ-Customer-AAB
+          path: customer-apk/app/build/outputs/bundle/release/app-release.aab
