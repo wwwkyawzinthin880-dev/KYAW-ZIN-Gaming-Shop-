@@ -29,7 +29,15 @@
 </div>
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
 <div class="paybox"><div class="bank" id="paymentInfo"><b>🏦 KBank</b><br>Account Name — <b>MR. KYAW ZIN THIN</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
-<button class="messenger" onclick="sendMessenger()">📤 Order + Slip ပို့မယ်</button><div class="order" id="order"></div></section>
+<button class="messenger" type="button" onclick="openSendChoice()">📤 Order + Slip ပို့မယ်</button>
+<div id="sendChoice" style="display:none;position:fixed;inset:0;background:#0009;z-index:2147483646;align-items:center;justify-content:center;padding:18px">
+<div style="width:100%;max-width:360px;background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 40px #0006">
+<div style="font-size:18px;font-weight:900;margin-bottom:6px">📤 Order + Slip ပို့မယ်</div>
+<div style="font-size:12px;color:#72788a;margin-bottom:14px">ဘယ်နေရာကို ပို့မလဲ ရွေးပါ</div>
+<button type="button" onclick="sendToTelegram()" style="width:100%;border:0;border-radius:12px;padding:13px;background:#229ED9;color:#fff;font-weight:900;font-size:14px;margin-bottom:9px">✈️ Telegram သို့ပို့မယ်</button>
+<button type="button" onclick="sendToMessenger()" style="width:100%;border:0;border-radius:12px;padding:13px;background:#7B61FF;color:#fff;font-weight:900;font-size:14px;margin-bottom:9px">💬 Messenger သို့ပို့မယ်</button>
+<button type="button" onclick="closeSendChoice()" style="width:100%;border:1px solid #ddd;background:#fff;border-radius:12px;padding:11px;font-weight:700">မပို့တော့ပါ</button>
+</div></div><div class="order" id="order"></div></section>
 <section class="checkout" id="history"><h2>📋 Order မှတ်တမ်း</h2><div id="historyList"><div class="note">ဒီဖုန်း/Browser မှာ တင်ထားတဲ့ Order မှတ်တမ်းတွေ ဒီနေရာမှာ ပြပါမယ်။</div></div></section>
 <div class="footer">© 2026 KYAW ZIN Gaming Shop • Fast • Safe • Trusted<br><a href="terms.html" style="color:#6957ff;text-decoration:none">Terms & Conditions</a> · <a href="refund-policy.html" style="color:#6957ff;text-decoration:none">Refund Policy</a> · <a href="privacy-policy.html" style="color:#6957ff;text-decoration:none">Privacy Policy</a></div></main>
 <script>
@@ -135,22 +143,32 @@ function renderOrderHistory(){
 }
 renderOrderHistory(); updateCurrencyUI();
 
-async function sendMessenger(){
-  const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim();
-  const file=document.getElementById('slipFile').files[0];
+function openSendChoice(){
+  const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim(), file=document.getElementById('slipFile').files[0];
   if(!uid||!zone)return alert('အရင် User ID နဲ့ Zone ID ထည့်ပါ။');
+  if(!current.name)return alert('အရင် Package တစ်ခုရွေးပါ။');
   if(!file)return alert('ငွေလွှဲပြေစာ (Slip) ပုံကို အရင်ရွေးပါ။');
   if(!document.getElementById('order').textContent) makeOrder();
-  const t=document.getElementById('order').textContent;
-  const btn=document.querySelector('.messenger'); btn.disabled=true; btn.textContent='⏳ Order + Slip ပို့နေပါတယ်...';
+  document.getElementById('sendChoice').style.display='flex';
+}
+function closeSendChoice(){document.getElementById('sendChoice').style.display='none';}
+async function sendToTelegram(){
+  const file=document.getElementById('slipFile').files[0], t=document.getElementById('order').textContent, btn=document.querySelector('.messenger');
+  closeSendChoice(); btn.disabled=true; btn.textContent='⏳ Telegram သို့ ပို့နေပါတယ်...';
   try{
     const base64=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
     const r=await fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64})});
     const out=await r.json().catch(()=>({}));
     if(!r.ok||!out.ok) throw new Error(out.error||'ပို့မရပါ');
-    alert('✅ Order + Slip ပုံကို Admin ဆီ ပို့ပြီးပါပြီ။');
-  }catch(e){alert('❌ မပို့နိုင်သေးပါ။ Admin Telegram ချိတ်ဆက်မှုကို စစ်ပေးရပါမယ်။');}
+    alert('✅ Order အချက်အလက် + Slip ပုံကို Telegram သို့ ပို့ပြီးပါပြီ။');
+  }catch(e){alert('❌ Telegram သို့ မပို့နိုင်သေးပါ။ Telegram Bot ချိတ်ဆက်မှုကို စစ်ပါ။');}
   finally{btn.disabled=false;btn.textContent='📤 Order + Slip ပို့မယ်';}
+}
+async function sendToMessenger(){
+  const t=document.getElementById('order').textContent; closeSendChoice();
+  try{if(navigator.clipboard) await navigator.clipboard.writeText(t);}catch(e){}
+  window.open('https://www.facebook.com/share/1CHUy9evjj/','_blank','noopener');
+  alert('✅ Order အချက်အလက်ကို Copy လုပ်ပြီး Messenger ကိုဖွင့်ပေးလိုက်ပါပြီ။ Messenger ထဲမှာ Paste လုပ်ပြီး Slip ပုံကို Attach လုပ်ပို့ပါ။\n\nTelegram ကိုရွေးရင် Slip ပုံပါ Auto ပို့ပေးနိုင်ပါတယ်။');
 }
 </script><style>
 .contact-float{position:fixed;right:14px;bottom:90px;z-index:2147483647}
