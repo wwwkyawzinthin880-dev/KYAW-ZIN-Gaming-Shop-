@@ -6,9 +6,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class MainActivity extends Activity { // KYAW ZIN Owner APK
+public class MainActivity extends Activity {
     private WebView webView;
-
     @Override public void onCreate(Bundle b) {
         super.onCreate(b);
         webView = new WebView(this);
@@ -17,10 +16,9 @@ public class MainActivity extends Activity { // KYAW ZIN Owner APK
         s.setDomStorageEnabled(true);
         s.setDatabaseEnabled(true);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("https://wwwkyawzinthin880-dev.github.io/KYAW-ZIN-Gaming-Shop-/owner-app/?apk=1");
+        webView.loadUrl("https://kyaw-zin-gaming-shop-vp14.vercel.app/owner-app/?apk=1");
         setContentView(webView);
     }
-
     @Override public void onBackPressed() {
         if (webView != null && webView.canGoBack()) webView.goBack();
         else super.onBackPressed();
