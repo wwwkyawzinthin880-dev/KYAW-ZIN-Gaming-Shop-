@@ -52,8 +52,9 @@ async function loadData(){
   document.querySelectorAll('.value')[3].textContent='฿ '+Number(d.paymentFee||0).toLocaleString();
   document.querySelector('.profit').textContent='฿ '+Number(d.profit||0).toLocaleString();
   const box=document.getElementById('ordersBox');
-  const items=Array.isArray(d.items)?d.items:[];
-  box.innerHTML=items.length?items.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' ('+String(x.serverId||'')+')</div><div class="small">ရောင်း ฿'+Number(x.customerAmount||0).toLocaleString()+' · အရင်း ฿'+Number(x.supplierCost||0).toLocaleString()+' · Fee ฿'+Number(x.paymentFee||0).toLocaleString()+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join(''):'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
+  const items=Array.isArray(d.items)?d.items:[]; const pending=Array.isArray(d.pending)?d.pending:[];
+  const pendingHtml=pending.map(x=>'<div class="row"><div><b>⏳ '+String(x.packageName||'MMK Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / '+String(x.serverId||'')+'</div><div class="small">MMK '+Number(x.customerAmount||0).toLocaleString()+' · '+String(x.source||'')+'</div></div><span class="pill">Pending</span></div>').join('');
+  box.innerHTML=(pendingHtml?'<div class="small" style="padding:8px 0">⏳ Payment စစ်ဆေးရန်</div>'+pendingHtml:'')+(items.length?items.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' ('+String(x.serverId||'')+')</div><div class="small">ရောင်း ฿'+Number(x.customerAmount||0).toLocaleString()+' · အရင်း ฿'+Number(x.supplierCost||0).toLocaleString()+' · Fee ฿'+Number(x.paymentFee||0).toLocaleString()+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join('') :'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
  }catch(e){}
 }
 checkSession();
