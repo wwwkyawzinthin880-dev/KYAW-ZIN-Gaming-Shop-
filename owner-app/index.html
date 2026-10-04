@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.webmanifest"><title>KYAW ZIN Owner</title>
+<meta name="theme-color" content="#111827"><link rel="icon" href="../icon.svg"><link rel="manifest" href="manifest.webmanifest"><title>KYAW ZIN Owner</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f4f6;color:#111827;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:#111827;color:#fff;padding:20px 16px 24px;border-radius:0 0 24px 24px}header h1{margin:0;font-size:22px}header p{margin:6px 0 0;color:#cbd5e1}
+*{box-sizing:border-box}
+html,body{min-height:100%;width:100%}
+body{overflow-x:hidden}
+body{margin:0;background:#f3f4f6;color:#111827;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:linear-gradient(135deg,#111827,#1e293b);color:#fff;padding:20px 16px 24px;border-radius:0 0 24px 24px}header h1{margin:0;font-size:22px}header p{margin:6px 0 0;color:#cbd5e1}
 main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 18px #0000000d}.label{font-size:13px;color:#64748b}.value{font-size:25px;font-weight:800;margin-top:5px}.profit{color:#059669}.section{margin-top:18px;font-size:18px;font-weight:800}.row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #e5e7eb}.row:last-child{border:0}.small{font-size:12px;color:#64748b}.pill{padding:5px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700}
-.login{position:fixed;inset:0;background:#111827;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}.loginbox{background:white;border-radius:22px;padding:24px;width:100%;max-width:360px}.loginbox h2{margin-top:0}.loginbox input{width:100%;padding:14px;border:1px solid #d1d5db;border-radius:12px;font-size:18px;margin:10px 0}.btn{width:100%;border:0;background:#111827;color:#fff;padding:14px;border-radius:12px;font-weight:800;font-size:16px}.note{font-size:12px;color:#64748b;margin-top:12px;line-height:1.5}
+.login{position:fixed;inset:0;background:#111827;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}.loginbox{background:#fff;border-radius:24px;padding:28px 24px;width:min(92vw,420px);max-width:420px;box-shadow:0 18px 55px #0008;text-align:center}.loginLogo{width:86px;height:86px;border-radius:22px;margin:0 auto 16px;display:block;box-shadow:0 8px 24px #0002}.loginbox h2{font-size:25px;margin:0 0 8px}.loginbox input{width:100%;padding:14px;border:1px solid #d1d5db;border-radius:12px;font-size:18px;margin:10px 0}.btn{width:100%;border:0;background:#111827;color:#fff;padding:14px;border-radius:12px;font-weight:800;font-size:16px}.note{font-size:12px;color:#64748b;margin-top:12px;line-height:1.5}
 </style></head><body>
-<div id="login" class="login"><div class="loginbox"><h2>🔐 KYAW ZIN Owner</h2><p>Owner App</p><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="Owner PIN"><button class="btn" onclick="login()">ဝင်မယ်</button><div class="note">ဒီ PIN က UI prototype အတွက်သာ ဖြစ်ပါတယ်။ Live ဖြစ်ချိန်မှာ server-side owner authentication နဲ့ အစားထိုးမယ်။</div></div></div>
-<header><h1>💎 KYAW ZIN Owner</h1><p>Sales & Profit Dashboard</p></header>
+<div id="login" class="login"><div class="loginbox"><img class="loginLogo" src="../icon.svg" alt="KYAW ZIN logo"><h2>🔐 KYAW ZIN Owner</h2><p>Owner App</p><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="Owner PIN"><button class="btn" onclick="login()">ဝင်မယ်</button><div class="note">ဒီ PIN က UI prototype အတွက်သာ ဖြစ်ပါတယ်။ Live ဖြစ်ချိန်မှာ server-side owner authentication နဲ့ အစားထိုးမယ်။</div></div></div>
+<header><div style="display:flex;align-items:center;gap:12px"><img src="../icon.svg" alt="logo" style="width:48px;height:48px;border-radius:14px;background:#fff;padding:4px"><div><h1>KYAW ZIN Owner</h1><p>Sales & Profit Dashboard</p></div></div></header>
 <main>
 <div class="grid">
 <div class="card"><div class="label">ယနေ့ ရောင်းရငွေ</div><div class="value">฿ 0</div></div>
