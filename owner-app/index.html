@@ -26,6 +26,32 @@ main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-c
 <div class="card"><div class="small">Customer ပေးငွေ − LioGames supplier အရင်း − payment fee = အမြတ်</div></div>
 </main>
 <script>
-function login(){const p=document.getElementById('pin').value;if(!p)return alert('PIN ထည့်ပါ');localStorage.setItem('kz_owner_session','1');document.getElementById('login').style.display='none'}
-if(localStorage.getItem('kz_owner_session')==='1')document.getElementById('login').style.display='none';
+const SECURE_OWNER="https://kyaw-zin-gaming-shop.vercel.app/owner-app/";
+if(location.hostname.endsWith("github.io")){location.replace(SECURE_OWNER);throw new Error("redirect");}
+const loginBox=document.getElementById('login');
+async function checkSession(){
+ try{const r=await fetch('/api/owner/auth',{credentials:'include',cache:'no-store'});const d=await r.json();if(d.ok){loginBox.style.display='none';await loadData();}}
+ catch(e){}
+}
+async function login(){
+ const p=document.getElementById('pin').value;
+ if(!p)return alert('Owner PIN ထည့်ပါ');
+ const r=await fetch('/api/owner/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({password:p})});
+ const d=await r.json();
+ if(!r.ok){alert(d.error||'Login မအောင်မြင်ပါ');return}
+ document.getElementById('pin').value='';loginBox.style.display='none';await loadData();
+}
+async function loadData(){
+ try{
+  const r=await fetch('/api/owner/data',{credentials:'include',cache:'no-store'});
+  if(r.status===401){loginBox.style.display='flex';return}
+  const d=await r.json();
+  document.querySelectorAll('.value')[0].textContent='฿ '+Number(d.sales||0).toLocaleString();
+  document.querySelectorAll('.value')[1].textContent=Number(d.orders||0).toLocaleString();
+  document.querySelectorAll('.value')[2].textContent='฿ '+Number(d.supplierCost||0).toLocaleString();
+  document.querySelectorAll('.value')[3].textContent='฿ '+Number(d.paymentFee||0).toLocaleString();
+  document.querySelector('.profit').textContent='฿ '+Number(d.profit||0).toLocaleString();
+ }catch(e){}
+}
+checkSession();
 </script></body></html>
