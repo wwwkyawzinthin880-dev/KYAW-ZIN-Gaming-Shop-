@@ -5,12 +5,10 @@ const OMISE_BASE = 'https://api.omise.co';
 
 function safeEqualHex(a, b) {
   try {
-    const aa = Buffer.from(String(a || ''), 'hex');
-    const bb = Buffer.from(String(b || ''), 'hex');
+    const aa = Buffer.from(String(a || '').trim(), 'hex');
+    const bb = Buffer.from(String(b || '').trim(), 'hex');
     return aa.length === bb.length && aa.length > 0 && crypto.timingSafeEqual(aa, bb);
-  } catch {
-    return false;
-  }
+  } catch { return false; }
 }
 
 function signLio(body, secret) {
@@ -39,9 +37,13 @@ module.exports = async (req, res) => {
   }
 
   const raw = await readRawBody(req);
-  const signature = req.headers['omise-signature'];
-  const expected = crypto.createHmac('sha256', webhookSecret).update(raw, 'utf8').digest('hex');
-  if (!safeEqualHex(signature, expected)) return res.status(401).json({ error: 'Invalid webhook signature' });
+  const signatureHeader = req.headers['omise-signature'];
+  const timestamp = req.headers['omise-signature-timestamp'];
+  if (!signatureHeader || !timestamp) return res.status(401).json({ error: 'Missing webhook signature' });
+  const decodedSecret = Buffer.from(webhookSecret, 'base64');
+  const expected = crypto.createHmac('sha256', decodedSecret).update(String(timestamp) + '.' + raw, 'utf8').digest('hex');
+  const signatures = String(signatureHeader).split(',').map(x => x.trim()).filter(Boolean);
+  if (!signatures.some(sig => safeEqualHex(sig, expected))) return res.status(401).json({ error: 'Invalid webhook signature' });
 
   let event;
   try { event = JSON.parse(raw); } catch { return res.status(400).json({ error: 'Invalid JSON' }); }
