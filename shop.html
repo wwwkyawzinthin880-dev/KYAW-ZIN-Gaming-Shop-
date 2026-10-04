@@ -40,14 +40,14 @@
 </div></div><div class="order" id="order"></div></section>
 <div class="footer">© 2026 KYAW ZIN Gaming Shop • Fast • Safe • Trusted<br><a href="terms.html" style="color:#6957ff;text-decoration:none">Terms & Conditions</a> · <a href="refund-policy.html" style="color:#6957ff;text-decoration:none">Refund Policy</a> · <a href="privacy-policy.html" style="color:#6957ff;text-decoration:none">Privacy Policy</a></div></main>
 <script>
-const dia=[[55,35],[86,46],[165,85],[172,90],[257,125],[275,135],[344,175],[447,220],[514,247],[565,270],[620,300],[706,330],[730,355],[822,395],[981,465],[1130,540],[1271,600],[1412,660],[2195,995],[3688,1670],[5532,2500],[9288,4150]];
+const diamondPackages=[[55,35],[86,46],[165,85],[172,90],[257,125],[275,135],[344,175],[447,220],[514,247],[565,270],[620,300],[706,330],[730,355],[822,395],[981,465],[1130,540],[1271,600],[1412,660],[2195,995],[3688,1670],[5532,2500],[9288,4150]];
 const doubles=[["50 + 50",35],["150 + 150",85],["250 + 250",135],["500 + 500",270]];
 const passes=[["WP 1 week",55],["Elite weekly pass",30],["Twilight weekly pass",280],["Epic Monthly package (once)",145]];
 let currency='THB'; let current={name:'',price:0};
 let weeklyQty=1;
 function money(v){return v.toLocaleString('en-US')+' THB';}
 function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);};return d}
-dia.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
+diamondPackages.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
 const wpCard=document.getElementById('passes').firstElementChild;
 if(wpCard){
   wpCard.innerHTML='<div class="icon">🎟️</div><div class="name">WP 1 week</div><div class="price" id="wpPrice">'+money(55)+'</div><div class="qtybox"><button type="button" class="qtybtn" id="wpMinus">−</button><div class="qtynum"><span id="wpQty">1</span> ပတ်</div><button type="button" class="qtybtn" id="wpPlus">+</button></div><div class="qtyhint">− / + နဲ့ 1 ပတ်မှ 10 ပတ်အထိ ရွေးနိုင်ပါတယ်</div><button type="button" class="buy" id="wpSelect" style="width:100%;border:0;cursor:pointer">ရွေးမယ်</button>';
