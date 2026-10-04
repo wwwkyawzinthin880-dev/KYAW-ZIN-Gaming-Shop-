@@ -1,4 +1,17 @@
 plugins { id 'com.android.application' }
-android { namespace 'com.kyawzin.customer'; compileSdk 35
-    defaultConfig { applicationId 'com.kyawzin.customer'; minSdk 23; targetSdk 35; versionCode 1; versionName '1.0' }
+def props = new Properties()
+def propsFile = rootProject.file('keystore.properties')
+if (propsFile.exists()) { propsFile.withInputStream { props.load(it) } }
+android {
+    namespace 'com.kyawzin.customer'; compileSdk 35
+    defaultConfig { applicationId 'com.kyawzin.customer'; minSdk 23; targetSdk 35; versionCode 2; versionName '1.1' }
+    signingConfigs {
+        release {
+            if (propsFile.exists()) {
+                storeFile file(props['storeFile']); storePassword props['storePassword']
+                keyAlias props['keyAlias']; keyPassword props['keyPassword']
+            }
+        }
+    }
+    buildTypes { release { minifyEnabled false; signingConfig signingConfigs.release } }
 }
