@@ -105,7 +105,7 @@ module.exports = async (req, res) => {
       const paymentFee=Number(charge.fee||0)/100;
       const order={id:String(meta.order_id),createdAt:new Date().toISOString(),status:"paid",packageName:String(meta.package_name||""),userId:String(meta.user_id),serverId:String(meta.server_id),customerAmount,supplierCost,paymentFee,profit:customerAmount-supplierCost-paymentFee,currency:"THB",source:"KPLUS"};
       let items=[];
-      try{const {download}=require("@vercel/blob");const r=await download("owner-data/orders.json");items=JSON.parse(await r.text());if(!Array.isArray(items))items=[]}catch{}
+      try{const {download,list}=require("@vercel/blob");const q=await list({prefix:"owner-data/orders.json",limit:1}); if(q.blobs?.length){const r=await download(q.blobs[0].url);items=JSON.parse(await r.text());}if(!Array.isArray(items))items=[]}catch{}
       const idx=items.findIndex(x=>x.id===order.id); if(idx>=0)items[idx]={...items[idx],...order}; else items.unshift(order);
       await put("owner-data/orders.json",JSON.stringify(items.slice(0,500)),{access:"private",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json"});
     } catch(e) {}
