@@ -11,7 +11,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("release.keystore")
+            storeFile rootProject.file("release.keystore")
             storePassword System.getenv("KZ_KEYSTORE_PASSWORD") ?: "KZ-temp-release"
             keyAlias "kyawzin"
             keyPassword System.getenv("KZ_KEY_PASSWORD") ?: "KZ-temp-release"
