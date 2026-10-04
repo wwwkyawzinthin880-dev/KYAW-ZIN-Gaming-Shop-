@@ -8,6 +8,7 @@ function sign(body, secret) {
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
+  return res.status(410).json({ error: 'Direct supplier top-up endpoint disabled. Use the verified payment webhook or owner dashboard.' });
 
   const keyId = process.env.LIOGAMES_API_KEY_ID;
   const secret = process.env.LIOGAMES_API_SECRET;
