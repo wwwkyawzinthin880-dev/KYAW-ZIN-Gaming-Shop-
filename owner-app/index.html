@@ -51,7 +51,16 @@ async function login(){
  }catch(e){status.textContent='Server ကို ချိတ်မရသေးပါ။ Internet ပြန်စစ်ပြီး ထပ်နှိပ်ပါ။'}
  finally{btn.disabled=false;btn.textContent='ဝင်မယ်';}
 }
-async function topupOrder(id){\n try{const r=await fetch('/api/owner/topup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:id,payment_confirmed:true})});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok){alert('❌ Top Up မအောင်မြင်ပါ: '+(d.error||r.status));return}alert('✅ LioGames ဆီ Top Up Order ပို့ပြီးပါပြီ။');await loadData();}catch(e){alert('❌ Top Up server ချိတ်မရပါ။');}}\nasync function loadData(){
+async function topupOrder(id){
+ try{
+  const r=await fetch('/api/owner/topup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:id,payment_confirmed:true})});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.ok){alert('❌ Top Up မအောင်မြင်ပါ: '+(d.error||r.status));return}
+  alert('✅ LioGames ဆီ Top Up Order ပို့ပြီးပါပြီ။');
+  await loadData();
+ }catch(e){alert('❌ Top Up server ချိတ်မရပါ။');}
+}
+async function loadData(){
  try{
   const r=await fetch('/api/owner/data',{credentials:'include',cache:'no-store'});
   if(r.status===401){loginBox.style.display='flex';return}
