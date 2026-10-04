@@ -37,6 +37,8 @@ module.exports = async (req, res) => {
   }
 
   const raw = await readRawBody(req);
+  const ts = Number(timestamp);
+  if (!Number.isFinite(ts) || Math.abs(Date.now()/1000 - ts) > 300) return res.status(401).json({ error: 'Expired webhook timestamp' });
   const signatureHeader = req.headers['omise-signature'];
   const timestamp = req.headers['omise-signature-timestamp'];
   if (!signatureHeader || !timestamp) return res.status(401).json({ error: 'Missing webhook signature' });
@@ -80,7 +82,6 @@ module.exports = async (req, res) => {
     client_ref: String(meta.order_id),
     user_id: String(meta.user_id),
     server_id: String(meta.server_id),
-    payment_verified: true
   };
   if (meta.variation_id !== undefined && meta.variation_id !== '') {
     payload.variation_id = Number(meta.variation_id);
