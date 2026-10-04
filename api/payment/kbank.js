@@ -35,6 +35,9 @@ async function getVariation(productId, packageName) {
 }
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://wwwkyawzinthin880-dev.github.io');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
   const secret = process.env.OMISE_SECRET_KEY;
   const memberCode = process.env.LIOGAMES_MEMBER_CODE;
@@ -65,6 +68,7 @@ module.exports = async (req, res) => {
   params.set('return_uri', String(data.return_uri || 'https://kyaw-zin-gaming-shop.vercel.app/shop.html?payment=return&order=' + encodeURIComponent(orderId)));
   params.set('source[type]', 'mobile_banking_kbank');
   params.set('source[platform_type]', 'WEB');
+  params.set('webhook_endpoints[0]', 'https://kyaw-zin-gaming-shop.vercel.app/api/payment/omise-webhook');
   params.set('description', 'KYAW ZIN Gaming Shop - ' + orderId);
   params.set('metadata[order_id]', orderId);
   params.set('metadata[member_code]', memberCode);
