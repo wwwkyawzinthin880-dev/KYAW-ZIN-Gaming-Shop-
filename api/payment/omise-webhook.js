@@ -37,10 +37,10 @@ module.exports = async (req, res) => {
   }
 
   const raw = await readRawBody(req);
-  const ts = Number(timestamp);
-  if (!Number.isFinite(ts) || Math.abs(Date.now()/1000 - ts) > 300) return res.status(401).json({ error: 'Expired webhook timestamp' });
   const signatureHeader = req.headers['omise-signature'];
   const timestamp = req.headers['omise-signature-timestamp'];
+  const ts = Number(timestamp);
+  if (!Number.isFinite(ts) || Math.abs(Date.now()/1000 - ts) > 300) return res.status(401).json({ error: 'Expired webhook timestamp' });
   if (!signatureHeader || !timestamp) return res.status(401).json({ error: 'Missing webhook signature' });
   const decodedSecret = Buffer.from(webhookSecret, 'base64');
   const expected = crypto.createHmac('sha256', decodedSecret).update(String(timestamp) + '.' + raw, 'utf8').digest('hex');
