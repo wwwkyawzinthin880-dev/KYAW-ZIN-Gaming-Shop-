@@ -28,15 +28,15 @@ jobs:
           unzip -q gradle.zip
       - name: Build Admin APK
         working-directory: admin-apk
-        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleDebug
+        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleRelease
       - name: Build Customer APK
         working-directory: customer-apk
-        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleDebug
+        run: ../gradle-8.9/bin/gradle --no-daemon :app:assembleRelease
       - uses: actions/upload-artifact@v4
         with:
           name: KZ-Admin-APK
-          path: admin-apk/app/build/outputs/apk/debug/app-debug.apk
+          path: admin-apk/app/build/outputs/apk/release/app-release.apk
       - uses: actions/upload-artifact@v4
         with:
           name: KZ-Customer-APK
-          path: customer-apk/app/build/outputs/apk/debug/app-debug.apk
+          path: customer-apk/app/build/outputs/apk/release/app-release.apk
