@@ -30,7 +30,7 @@
 <div id="slipPreview" style="display:none;margin-top:10px"><img id="slipImg" alt="Slip preview" style="width:100%;max-height:300px;object-fit:contain;border-radius:12px;cursor:pointer"></div>
 </div>
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
-<div class="paybox"><div class="bank" id="paymentInfo"><b>🏦 KBank</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
+<div class="paybox"><div style="background:#171923;color:#fff;border-radius:12px;padding:12px;margin-bottom:10px"><div style="font-size:12px;opacity:.8">💰 ငွေပေးချေရမယ့်ပမာဏ</div><div id="payAmount" style="font-size:24px;font-weight:900;margin-top:3px">Package မရွေးရသေးပါ</div></div><div class="bank" id="paymentInfo"><b>🏦 KBank</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
 <button class="messenger" type="button" onclick="openSendChoice()">📤 Order + Slip ပို့မယ်</button><button class="messenger" type="button" id="autoPayBtn" onclick="startAutoTopup()" style="background:#20b66f">⚡ ငွေပေးပြီး Dia Auto Top-up</button><div id="autoPayStatus" class="note" style="margin-top:8px"></div>
 <div id="sendChoice" style="display:none;position:fixed;inset:0;background:#0009;z-index:2147483646;align-items:center;justify-content:center;padding:18px">
 <div style="width:100%;max-width:360px;background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 40px #0006">
@@ -48,7 +48,7 @@ const passes=[["WP 1 week",55],["Elite weekly pass",30],["Twilight weekly pass",
 let currency='THB'; let current={name:'',price:0};
 let weeklyQty=1;
 function money(v){return v.toLocaleString('en-US')+' THB';}
-function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);};return d}
+function card(name,price,icon){const d=document.createElement('div');d.className='product';d.dataset.search=(name+' '+price).toLowerCase();d.innerHTML=`<div class="icon">${icon}</div><div class="name">${name}</div><div class="price" data-thb="${price}">${money(price)}</div><div class="buy">ရွေးမယ်</div>`;d.onclick=()=>{document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));d.classList.add('selected');current={name,price};document.getElementById('selected').textContent=name+' — '+money(price);document.getElementById('payAmount').textContent=money(price);};return d}
 diamondPackages.forEach(x=>document.getElementById('dia').appendChild(card('Dia '+x[0],x[1],'💎')));doubles.forEach(x=>document.getElementById('double').appendChild(card('Dia '+x[0],x[1],'✨')));passes.forEach(x=>document.getElementById('passes').appendChild(card(x[0],x[1],'🎟️')));
 const wpCard=document.getElementById('passes').firstElementChild;
 if(wpCard){
@@ -67,7 +67,7 @@ function selectWeekly(){
   document.querySelectorAll('.product').forEach(x=>x.classList.remove('selected'));
   wpCard.classList.add('selected');
   current={name:'WP '+weeklyQty+' weeks',price:55*weeklyQty};
-  document.getElementById('selected').textContent='🎟️ '+current.name+' — '+money(current.price);
+  document.getElementById('selected').textContent='🎟️ '+current.name+' — '+money(current.price);document.getElementById('payAmount').textContent=money(current.price);
   renderWPChoices();
   
 }
@@ -76,7 +76,7 @@ function updateCurrencyUI(){
   document.querySelectorAll('.price[data-thb]').forEach(el=>el.textContent=money(Number(el.dataset.thb)));
   document.getElementById('wpPrice').textContent=money(55*weeklyQty);
   renderWPChoices();
-  if(current.name) document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price);
+  if(current.name) { document.getElementById('selected').textContent=(current.name.startsWith('WP')?'🎟️ ':'')+current.name+' — '+money(current.price); document.getElementById('payAmount').textContent=money(current.price); } else document.getElementById('payAmount').textContent='Package မရွေးရသေးပါ';
   
   document.getElementById('paymentInfo').innerHTML='<b>🏦 KBank — THB Payment</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong><br><span class="note">KBank အကောင့်ထဲသို့ ထိုင်းဘတ်ငွေ လွှဲပြီး Slip ပို့ပါ။</span>';
   document.getElementById('paymentNote').textContent='KBank အကောင့်သို့ ငွေလွှဲပြီး Slip ပုံတင်ကာ Order တင်ပါ။';
@@ -107,8 +107,8 @@ async function lookupPlayer(){
   try{
     const r=await fetch(`https://api.isan.eu.org/nickname/ml?id=${encodeURIComponent(uid)}&server=${encodeURIComponent(zone)}&decode=false`,{cache:'no-store'});
     const data=await r.json();
-    if(data && data.success && data.name){
-      nameEl.textContent=data.name; note.textContent='✅ Game Name အတည်ပြုပြီးပါပြီ။'; window.kzPlayerName=data.name; window.kzPlayerVerified=true;
+    if(data && data.success && (data.name || data.nickname || data.data?.name)){
+      const foundName=data.name || data.nickname || data.data?.name; nameEl.textContent=foundName; note.textContent='✅ Game Name အတည်ပြုပြီးပါပြီ။'; window.kzPlayerName=foundName; window.kzPlayerVerified=true;
     }else{
       nameEl.textContent='မတွေ့ပါ'; note.textContent='❌ User ID / Zone ID မှန်မမှန် ပြန်စစ်ပါ။'; window.kzPlayerName=''; window.kzPlayerVerified=false;
     }
@@ -166,7 +166,7 @@ async function startAutoTopup(){
   const orderId='KZ'+Date.now().toString().slice(-9);
   btn.disabled=true; status.textContent='⏳ Secure payment link ပြင်ဆင်နေပါတယ်...';
   try{
-    const r=await fetch('https://kyaw-zin-gaming-shop.vercel.app/api/payment/omise-charge',{
+    const r=await fetch('https://kyaw-zin-gaming-shop-6g84axdkm-wwwkyawzinthin880-dev.vercel.app/api/payment/omise-charge',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({amount_thb:current.price,package_name:current.name,order_id:orderId,user_id:uid,server_id:zone,return_uri:location.href.split('?')[0]+'?payment=return&order='+encodeURIComponent(orderId)})
     });
@@ -195,7 +195,7 @@ async function sendToTelegram(){
   closeSendChoice(); btn.disabled=true; btn.textContent='⏳ Telegram သို့ ပို့နေပါတယ်...';
   try{
     const base64=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
-    const r=await fetch('https://kyaw-zin-gaming-shop.vercel.app/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64})});
+    const r=await fetch('https://kyaw-zin-gaming-shop-6g84axdkm-wwwkyawzinthin880-dev.vercel.app/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_text:t,file_name:file.name,file_type:file.type,file_base64:base64})});
     const out=await r.json().catch(()=>({}));
     if(!r.ok||!out.ok) throw new Error(out.error||'ပို့မရပါ');
     alert('✅ Order အချက်အလက် + Slip ပုံကို Telegram သို့ ပို့ပြီးပါပြီ။');
