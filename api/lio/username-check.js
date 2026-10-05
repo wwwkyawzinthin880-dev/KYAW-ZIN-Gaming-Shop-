@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
   const keyId = process.env.LIOGAMES_API_KEY_ID;
-  const secret = process.env.LIOGAMES_API_SECRET;
+  const secret = process.env.LIOGAMES_SECRET_KEY || process.env.LIOGAMES_API_SECRET;
   const memberCode = process.env.LIOGAMES_MEMBER_CODE;
   if (!keyId || !secret || !memberCode) return res.status(500).json({ error: 'LioGames environment variables are not configured' });
 
@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
   const headers = {
     'Content-Type': 'application/json',
     'x-liog-sign': sign(raw, secret),
-    'X-LIOG-KEY-ID': keyId
+    ...(keyId ? { 'X-LIOG-KEY-ID': keyId } : {})
   };
 
   try {
