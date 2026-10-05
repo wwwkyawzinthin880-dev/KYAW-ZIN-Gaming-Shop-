@@ -166,7 +166,7 @@ async function startAutoTopup(){
   const orderId='KZ'+Date.now().toString().slice(-9);
   btn.disabled=true; status.textContent='⏳ Secure payment link ပြင်ဆင်နေပါတယ်...';
   try{
-    const r=await fetch('https://kyaw-zin-gaming-shop-vp14.vercel.app/api/payment/omise-charge',{
+    const r=await fetch('https://kyaw-zin-gaming-shop.vercel.app/api/payment/omise-charge',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({amount_thb:current.price,package_name:current.name,order_id:orderId,user_id:uid,server_id:zone,return_uri:location.href.split('?')[0]+'?payment=return&order='+encodeURIComponent(orderId)})
     });
