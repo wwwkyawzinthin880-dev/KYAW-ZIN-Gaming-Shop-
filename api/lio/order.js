@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   return res.status(410).json({ error: 'Direct supplier top-up endpoint disabled. Use the verified payment webhook or owner dashboard.' });
 
   const keyId = process.env.LIOGAMES_API_KEY_ID;
-  const secret = process.env.LIOGAMES_API_SECRET;
+  const secret = process.env.LIOGAMES_SECRET_KEY || process.env.LIOGAMES_API_SECRET;
   const memberCode = process.env.LIOGAMES_MEMBER_CODE;
   if (!keyId || !secret || !memberCode) return res.status(500).json({ error: 'LioGames environment variables are not configured' });
 
@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'x-liog-sign': sign(raw, secret),
-        'X-LIOG-KEY-ID': keyId
+        ...(keyId ? { 'X-LIOG-KEY-ID': keyId } : {})
       },
       body: raw
     });
