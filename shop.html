@@ -160,7 +160,7 @@ async function startAutoTopup(){
   const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim();
   const status=document.getElementById('autoPayStatus'), btn=document.getElementById('autoPayBtn');
   if(!current.name)return alert('အရင် Diamond package တစ်ခုရွေးပါ။');
-  if(!/^Dia\\s+\\d+/i.test(current.name))return alert('⚡ Auto Top-up ကို လက်ရှိ Diamond packages အတွက်ပဲ ဖွင့်ထားပါတယ်။ WP/Pass က manual order ဖြစ်ပါတယ်။');
+  if(!/^Dia\s+\d+/i.test(current.name))return alert('⚡ Auto Top-up ကို လက်ရှိ Diamond packages အတွက်ပဲ ဖွင့်ထားပါတယ်။ WP/Pass က manual order ဖြစ်ပါတယ်။');
   if(!uid||!zone)return alert('MLBB User ID နဲ့ Zone ID နှစ်ခုလုံးထည့်ပါ။');
   if(!window.kzPlayerVerified||!window.kzPlayerName)return alert('🎮 Game Name ကို အရင် Auto စစ်ပြီး အတည်ပြုပါ။');
   const orderId='KZ'+Date.now().toString().slice(-9);
