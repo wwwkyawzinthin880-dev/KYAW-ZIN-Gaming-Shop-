@@ -30,7 +30,7 @@
 </div>
 <div class="note" id="lookupNote">User ID + Zone ID နှစ်ခုလုံးထည့်လိုက်တာနဲ့ Game Name ကို အလိုအလျောက်စစ်ပေးမယ်။</div>
 <div class="paybox"><div class="bank" id="paymentInfo"><b>🏦 KBank</b><br>Account Name — <b>Kyaw Zin Thin</b><br>Account No. — <strong>1533820073</strong></div><div class="note" id="paymentNote">ငွေလွှဲပြီးနောက် အပေါ်ကအချက်အလက်တွေဖြည့်ပြီး Order တင်ပါ။</div></div>
-<button class="messenger" type="button" onclick="openSendChoice()">📤 Order + Slip ပို့မယ်</button>
+<button class="messenger" type="button" onclick="openSendChoice()">📤 Order + Slip ပို့မယ်</button><button class="messenger" type="button" id="autoPayBtn" onclick="startAutoTopup()" style="background:#20b66f">⚡ ငွေပေးပြီး Dia Auto Top-up</button><div id="autoPayStatus" class="note" style="margin-top:8px"></div>
 <div id="sendChoice" style="display:none;position:fixed;inset:0;background:#0009;z-index:2147483646;align-items:center;justify-content:center;padding:18px">
 <div style="width:100%;max-width:360px;background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 40px #0006">
 <div style="font-size:18px;font-weight:900;margin-bottom:6px">📤 Order + Slip ပို့မယ်</div>
@@ -155,6 +155,30 @@ function renderOrderHistory(){
 }
 updateCurrencyUI();
 
+async function startAutoTopup(){
+  const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim();
+  const status=document.getElementById('autoPayStatus'), btn=document.getElementById('autoPayBtn');
+  if(!current.name)return alert('အရင် Diamond package တစ်ခုရွေးပါ။');
+  if(!/^Dia\\s+\\d+/i.test(current.name))return alert('⚡ Auto Top-up ကို လက်ရှိ Diamond packages အတွက်ပဲ ဖွင့်ထားပါတယ်။ WP/Pass က manual order ဖြစ်ပါတယ်။');
+  if(!uid||!zone)return alert('MLBB User ID နဲ့ Zone ID နှစ်ခုလုံးထည့်ပါ။');
+  if(!window.kzPlayerVerified||!window.kzPlayerName)return alert('🎮 Game Name ကို အရင် Auto စစ်ပြီး အတည်ပြုပါ။');
+  const orderId='KZ'+Date.now().toString().slice(-9);
+  btn.disabled=true; status.textContent='⏳ Secure payment link ပြင်ဆင်နေပါတယ်...';
+  try{
+    const r=await fetch('https://kyaw-zin-gaming-shop-vp14.vercel.app/api/payment/omise-charge',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({amount_thb:current.price,package_name:current.name,order_id:orderId,user_id:uid,server_id:zone,return_uri:location.href.split('?')[0]+'?payment=return&order='+encodeURIComponent(orderId)})
+    });
+    const out=await r.json().catch(()=>({}));
+    if(!r.ok||!out.ok)throw new Error(out.error||'Payment setup failed');
+    status.textContent='✅ Payment စာမျက်နှာကို ဖွင့်ပေးနေပါတယ်...';
+    if(out.authorize_uri) window.location.href=out.authorize_uri;
+    else throw new Error('Payment URL မရပါ');
+  }catch(e){
+    status.textContent='❌ '+(e.message||'Auto payment မစတင်နိုင်ပါ');
+    alert('❌ Auto Top-up မစနိုင်သေးပါ။ Vercel payment environment / Omise setup ကို စစ်ရပါမယ်။');
+  }finally{btn.disabled=false;}
+}
 function openSendChoice(){
   const uid=document.getElementById('uid').value.trim(), zone=document.getElementById('zone').value.trim(), file=document.getElementById('slipFile').files[0];
   if(!uid||!zone)return alert('အရင် User ID နဲ့ Zone ID ထည့်ပါ။');
