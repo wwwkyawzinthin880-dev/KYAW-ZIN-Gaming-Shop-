@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827"><link rel="icon" href="../icon.svg"><link rel="manifest" href="manifest.webmanifest"><title>KYAW ZIN Owner</title><!-- owner-login-refresh-20261005 -->
+<meta name="theme-color" content="#111827"><link rel="icon" href="../icon.svg"><link rel="manifest" href="manifest.webmanifest"><title>KYAW ZIN Owner</title><!-- owner-login-refresh-20261006 -->
 <style>
 *{box-sizing:border-box}
 html,body{min-height:100%;width:100%}
@@ -13,6 +13,7 @@ main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-c
 <div id="login" class="login"><div class="loginbox"><img class="loginLogo" src="../icon.svg" alt="KYAW ZIN logo"><h2>🔐 KYAW ZIN Owner</h2><p>Owner App</p><form id="loginForm" method="POST" action="/api/owner/auth" accept-charset="UTF-8"><input id="pin" name="password" type="password" maxlength="64" autocomplete="current-password" placeholder="Owner PIN"><button id="loginBtn" class="btn" type="submit">ဝင်မယ်</button></form><div id="loginStatus" class="note"></div><div class="note">Owner PIN ကို server-side မှာ စစ်ဆေးပြီး secure session cookie နဲ့ ဝင်ရောက်ခွင့်ပေးပါတယ်။</div></div></div>
 <header><div style="display:flex;align-items:center;gap:12px"><img src="../icon.svg" alt="logo" style="width:48px;height:48px;border-radius:14px;background:#fff;padding:4px"><div><h1>KYAW ZIN Owner</h1><p>Sales & Profit Dashboard</p></div></div></header>
 <main>
+<div style="display:flex;gap:8px;margin-bottom:12px"><button id="refreshBtn" class="btn" style="width:auto;padding:11px 16px">🔄 Refresh</button><button id="logoutBtn" class="btn" style="width:auto;padding:11px 16px;background:#dc2626">🔒 Logout</button></div>
 <div class="grid">
 <div class="card"><div class="label">🇹🇭 THB ရောင်းရငွေ</div><div class="value" id="thbSales">฿ 0</div></div>
 <div class="card"><div class="label">🇲🇲 MMK ရောင်းရငွေ</div><div class="value" id="mmkSales">0 MMK</div></div>
@@ -36,8 +37,10 @@ if(location.hostname.endsWith("github.io")){location.replace(SECURE_OWNER);throw
 const loginBox=document.getElementById('login');
 async function checkSession(){
  try{const r=await fetch('/api/owner/auth',{credentials:'include',cache:'no-store'});const d=await r.json();if(d.ok){loginBox.style.display='none';await loadData();}}
- catch(e){}
+ catch(e){document.getElementById('loginStatus').textContent='⚠️ Owner server ကို ချိတ်မရသေးပါ။ ခဏနောက် ထပ်စမ်းပါ။'}
 }
+document.getElementById('refreshBtn').addEventListener('click',loadData);
+document.getElementById('logoutBtn').addEventListener('click',async()=>{try{await fetch('/api/owner/auth',{method:'DELETE',credentials:'include'});}catch(e){} loginBox.style.display='flex';});
 document.getElementById('loginForm').addEventListener('submit', function(e){ e.preventDefault(); login(); });
 async function login(){
  const p=document.getElementById('pin').value.trim();
@@ -82,7 +85,7 @@ async function loadData(){
   const items=Array.isArray(d.items)?d.items:[]; const pending=Array.isArray(d.pending)?d.pending:[]; const history=Array.isArray(d.history)?d.history:[];
   const pendingHtml=pending.map(x=>'<div class="row"><div><b>⏳ '+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / '+String(x.serverId||'')+'</div><div class="small">'+String(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' · '+String(x.source||'')+'</div><button class="btn" style="margin-top:8px;padding:10px;font-size:13px" onclick="topupOrder(\''+String(x.id||'')+'\')">💎 ငွေချေပြီးပြီ — Top Up လုပ်မယ်</button></div><span class="pill">'+String(x.status||'Pending')+'</span></div>').join('');
   const list=history.length?history:items; box.innerHTML=(pendingHtml?'<div class="small" style="padding:8px 0">⏳ Payment စစ်ဆေးရန်</div>'+pendingHtml:'')+(list.length?list.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / Zone '+String(x.serverId||'')+'</div><div class="small">'+String(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' · အရင်း '+Number(x.supplierCost||0).toLocaleString()+' · Fee '+Number(x.paymentFee||0).toLocaleString()+'</div><div class="small">'+String(x.createdAt||'')+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join('') :'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
- }catch(e){}
+ }catch(e){alert('⚠️ Dashboard data ကို မဖတ်နိုင်သေးပါ။ Refresh နှိပ်ပြီး ထပ်စမ်းပါ။')}
 }
 checkSession();
 </script></body></html>
