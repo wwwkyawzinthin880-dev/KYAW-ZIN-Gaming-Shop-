@@ -32,8 +32,6 @@ main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-c
 <div class="card"><div class="small">Customer ပေးငွေ − LioGames supplier အရင်း − payment fee = အမြတ်</div></div>
 </main>
 <script>
-const SECURE_OWNER="https://kyaw-zin-gaming-shop.vercel.app/owner-app/";
-if(location.hostname.endsWith("github.io")){location.replace(SECURE_OWNER);throw new Error("redirect");}
 const loginBox=document.getElementById('login');
 async function checkSession(){
  try{const r=await fetch('/api/owner/auth',{credentials:'include',cache:'no-store'});const d=await r.json();if(d.ok){loginBox.style.display='none';await loadData();}}
