@@ -1,89 +1,106 @@
 <!doctype html>
-<html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827"><link rel="icon" href="../icon.svg"><link rel="manifest" href="manifest.webmanifest"><title>KYAW ZIN Owner</title><!-- owner-login-refresh-20261006 -->
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090b">
+<link rel="icon" href="../icon.svg">
+<title>KYAW ZIN • Owner</title>
 <style>
-*{box-sizing:border-box}
-html,body{min-height:100%;width:100%}
-body{overflow-x:hidden}
-body{margin:0;background:#f3f4f6;color:#111827;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:linear-gradient(135deg,#111827,#1e293b);color:#fff;padding:20px 16px 24px;border-radius:0 0 24px 24px}header h1{margin:0;font-size:22px}header p{margin:6px 0 0;color:#cbd5e1}
-main{padding:16px;max-width:760px;margin:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 18px #0000000d}.label{font-size:13px;color:#64748b}.value{font-size:25px;font-weight:800;margin-top:5px}.profit{color:#059669}.section{margin-top:18px;font-size:18px;font-weight:800}.row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #e5e7eb}.row:last-child{border:0}.small{font-size:12px;color:#64748b}.pill{padding:5px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700}
-.login{position:fixed;inset:0;background:#111827;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}.loginbox{background:#fff;border-radius:24px;padding:28px 24px;width:min(92vw,420px);max-width:420px;box-shadow:0 18px 55px #0008;text-align:center}.loginLogo{width:86px;height:86px;border-radius:22px;margin:0 auto 16px;display:block;box-shadow:0 8px 24px #0002}.loginbox h2{font-size:25px;margin:0 0 8px}.loginbox input{width:100%;padding:14px;border:1px solid #d1d5db;border-radius:12px;font-size:18px;margin:10px 0}.btn{width:100%;border:0;background:#111827;color:#fff;padding:16px;border-radius:12px;font-weight:800;font-size:17px;position:relative;z-index:9999;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}.note{font-size:12px;color:#64748b;margin-top:12px;line-height:1.5}
-</style></head><body>
-<div id="login" class="login"><div class="loginbox"><img class="loginLogo" src="../icon.svg" alt="KYAW ZIN logo"><h2>🔐 KYAW ZIN Owner</h2><p>Owner App</p><form id="loginForm" method="POST" action="/api/owner/auth" accept-charset="UTF-8"><input id="pin" name="password" type="password" maxlength="64" autocomplete="current-password" placeholder="Owner PIN"><button id="loginBtn" class="btn" type="submit">ဝင်မယ်</button></form><div id="loginStatus" class="note"></div><div class="note">Owner PIN ကို server-side မှာ စစ်ဆေးပြီး secure session cookie နဲ့ ဝင်ရောက်ခွင့်ပေးပါတယ်။</div></div></div>
-<header><div style="display:flex;align-items:center;gap:12px"><img src="../icon.svg" alt="logo" style="width:48px;height:48px;border-radius:14px;background:#fff;padding:4px"><div><h1>KYAW ZIN Owner</h1><p>Sales & Profit Dashboard</p></div></div></header>
-<main>
-<div style="display:flex;gap:8px;margin-bottom:12px"><button id="refreshBtn" class="btn" style="width:auto;padding:11px 16px">🔄 Refresh</button><button id="logoutBtn" class="btn" style="width:auto;padding:11px 16px;background:#dc2626">🔒 Logout</button></div>
-<div class="grid">
-<div class="card"><div class="label">🇹🇭 THB ရောင်းရငွေ</div><div class="value" id="thbSales">฿ 0</div></div>
-<div class="card"><div class="label">🇲🇲 MMK ရောင်းရငွေ</div><div class="value" id="mmkSales">0 MMK</div></div>
-<div class="card"><div class="label">🇹🇭 THB Orders</div><div class="value" id="thbOrders">0</div></div>
-<div class="card"><div class="label">🇲🇲 MMK Orders</div><div class="value" id="mmkOrders">0</div></div>
-<div class="card"><div class="label">ယနေ့ ရောင်းရငွေ (THB)</div><div class="value" id="todaySales">฿ 0</div></div>
-<div class="card"><div class="label">ယနေ့ အော်ဒါ</div><div class="value" id="todayOrders">0</div></div>
-<div class="card"><div class="label">Supplier အရင်း</div><div class="value" id="todaySupplier">฿ 0</div></div>
-<div class="card"><div class="label">Payment Fee</div><div class="value" id="todayFee">฿ 0</div></div>
+*{box-sizing:border-box}body{margin:0;background:#09090b;color:#f8fafc;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}.app{max-width:900px;margin:auto;padding:16px 14px 40px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px 20px}.brand{display:flex;align-items:center;gap:12px}.brand img{width:48px;height:48px;border-radius:15px;background:#fff;padding:4px}.brand h1{font-size:20px;margin:0}.brand p{font-size:12px;color:#a1a1aa;margin:3px 0 0}.actions{display:flex;gap:8px}.iconbtn{border:1px solid #27272a;background:#18181b;color:#fff;border-radius:12px;padding:10px 12px}
+.hero{background:linear-gradient(135deg,#581c87,#312e81 55%,#0f172a);border:1px solid #4c1d95;border-radius:24px;padding:20px;box-shadow:0 18px 45px #0006}.hero .muted{color:#ddd6fe;font-size:13px}.profit{font-size:34px;font-weight:900;margin-top:6px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.card{background:#111113;border:1px solid #27272a;border-radius:18px;padding:15px}.label{font-size:12px;color:#a1a1aa}.value{font-size:21px;font-weight:800;margin-top:5px}.green{color:#34d399}.section{font-weight:900;font-size:17px;margin:22px 2px 10px}.orders{display:grid;gap:10px}.order{background:#111113;border:1px solid #27272a;border-radius:18px;padding:14px}.orderhead{display:flex;justify-content:space-between;gap:10px}.status{font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;background:#172554;color:#bfdbfe;height:max-content}.meta{font-size:12px;color:#a1a1aa;line-height:1.6;margin-top:7px}.topup{width:100%;margin-top:10px;border:0;border-radius:12px;padding:12px;background:#7c3aed;color:#fff;font-weight:800}.empty{padding:25px;text-align:center;color:#a1a1aa}.login{position:fixed;inset:0;background:radial-gradient(circle at 50% 0,#3b0764,#09090b 55%);display:flex;align-items:center;justify-content:center;padding:18px;z-index:20}.loginbox{width:min(430px,100%);background:#111113;border:1px solid #3f3f46;border-radius:28px;padding:28px 22px;box-shadow:0 25px 80px #000b;text-align:center}.loginbox img{width:82px;height:82px;background:#fff;padding:5px;border-radius:23px}.loginbox h2{margin:15px 0 5px;font-size:25px}.loginbox p{margin:0 0 20px;color:#a1a1aa;font-size:13px}.pin{width:100%;padding:15px;border-radius:14px;border:1px solid #3f3f46;background:#09090b;color:#fff;text-align:center;font-size:22px;letter-spacing:6px;outline:0}.pin:focus{border-color:#8b5cf6}.loginbtn{width:100%;margin-top:11px;border:0;border-radius:14px;padding:15px;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-weight:900}.msg{min-height:22px;color:#fca5a5;font-size:13px;margin-top:10px}.hide{display:none!important}@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div id="login" class="login">
+ <form id="loginForm" class="loginbox">
+  <img src="../icon.svg" alt="KYAW ZIN">
+  <h2>KYAW ZIN Owner</h2><p>Owner Dashboard</p>
+  <input id="pin" class="pin" type="password" inputmode="numeric" maxlength="64" autocomplete="current-password" placeholder="••••••">
+  <button id="loginBtn" class="loginbtn" type="submit">ဝင်မယ်</button>
+  <div id="loginMsg" class="msg"></div>
+ </form>
 </div>
-<div class="card" style="margin-top:12px"><div class="label">ယနေ့ အမြတ်</div><div class="value profit" id="todayProfit">฿ 0</div></div>
-<div class="card" style="margin-top:12px"><div class="label">စုစုပေါင်း အမြတ် (မှတ်တမ်းရှိသမျှ)</div><div class="value profit" id="allProfit">฿ 0</div><div class="small" id="allSummary" style="margin-top:6px">Order 0 · Sales ฿0</div></div>
-<div class="section">🛒 Order စာရင်း</div>
-<div class="card" id="ordersBox"><div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div></div>
-<div class="section">📊 အမြတ်တွက်ပုံ</div>
-<div class="card"><div class="small">Customer ပေးငွေ − LioGames supplier အရင်း − payment fee = အမြတ်</div></div>
-</main>
+
+<div class="app">
+ <div class="top">
+  <div class="brand"><img src="../icon.svg"><div><h1>KYAW ZIN Owner</h1><p>Sales • Orders • Profit</p></div></div>
+  <div class="actions"><button class="iconbtn" id="refresh">↻</button><button class="iconbtn" id="logout">ထွက်</button></div>
+ </div>
+ <div class="hero"><div class="muted">ယနေ့ အမြတ်</div><div class="profit" id="todayProfit">฿ 0</div><div class="muted" id="todayInfo">Orders 0 • Sales ฿0</div></div>
+ <div class="grid">
+  <div class="card"><div class="label">THB ရောင်းရငွေ</div><div class="value" id="thbSales">฿0</div></div>
+  <div class="card"><div class="label">MMK ရောင်းရငွေ</div><div class="value" id="mmkSales">0</div></div>
+  <div class="card"><div class="label">Supplier အရင်း</div><div class="value" id="supplier">฿0</div></div>
+  <div class="card"><div class="label">Payment Fee</div><div class="value" id="fee">฿0</div></div>
+ </div>
+ <div class="section">📦 Orders</div>
+ <div id="orders" class="orders"><div class="card empty">Loading...</div></div>
+ <div class="section">📈 စုစုပေါင်း</div>
+ <div class="grid">
+  <div class="card"><div class="label">Orders</div><div class="value" id="allOrders">0</div></div>
+  <div class="card"><div class="label">All-time Profit</div><div class="value green" id="allProfit">฿0</div></div>
+  <div class="card"><div class="label">THB Orders</div><div class="value" id="thbOrders">0</div></div>
+  <div class="card"><div class="label">MMK Orders</div><div class="value" id="mmkOrders">0</div></div>
+ </div>
+</div>
+
 <script>
-const loginBox=document.getElementById('login');
-async function checkSession(){
- try{const r=await fetch('/api/owner/auth',{credentials:'include',cache:'no-store'});const d=await r.json();if(d.ok){loginBox.style.display='none';await loadData();}}
- catch(e){document.getElementById('loginStatus').textContent='⚠️ Owner server ကို ချိတ်မရသေးပါ။ ခဏနောက် ထပ်စမ်းပါ။'}
+const $=id=>document.getElementById(id);
+const loginBox=$('login');
+async function session(){
+ try{const r=await fetch('/api/owner/auth',{credentials:'include',cache:'no-store'});const d=await r.json();if(d.ok){loginBox.classList.add('hide');load();}}
+ catch(e){}
 }
-document.getElementById('refreshBtn').addEventListener('click',loadData);
-document.getElementById('logoutBtn').addEventListener('click',async()=>{try{await fetch('/api/owner/auth',{method:'DELETE',credentials:'include'});}catch(e){} loginBox.style.display='flex';});
-document.getElementById('loginForm').addEventListener('submit', function(e){ e.preventDefault(); login(); });
-async function login(){
- const p=document.getElementById('pin').value.trim();
- const status=document.getElementById('loginStatus');
- if(!p){status.textContent='Owner PIN ထည့်ပါ';return}
- const btn=document.getElementById('loginBtn'); btn.disabled=true; btn.textContent='စစ်ဆေးနေသည်...'; status.textContent='Server ကို စစ်ဆေးနေသည်...';
+$('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault(); const pin=$('pin').value.trim(); if(!pin){$('loginMsg').textContent='PIN ထည့်ပါ';return}
+ const b=$('loginBtn');b.disabled=true;b.textContent='စစ်နေသည်...';$('loginMsg').textContent='';
  try{
-  const r=await fetch('/api/owner/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',cache:'no-store',body:JSON.stringify({password:p})});
-  const text=await r.text(); let d={}; try{d=JSON.parse(text)}catch{}
-  if(!r.ok){status.textContent=d.error||('Login မအောင်မြင်ပါ ('+r.status+')');return}
-  document.getElementById('pin').value='';status.textContent='ဝင်ရောက်နေသည်...';loginBox.style.display='none';await loadData();
- }catch(e){status.textContent='Server ကို ချိတ်မရသေးပါ။ Internet ပြန်စစ်ပြီး ထပ်နှိပ်ပါ။'}
- finally{btn.disabled=false;btn.textContent='ဝင်မယ်';}
-}
-async function topupOrder(id){
+  const r=await fetch('/api/owner/auth',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pin}),cache:'no-store'});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){$('loginMsg').textContent=d.error||'PIN မမှန်ပါ';return}
+  $('pin').value='';loginBox.classList.add('hide');await load();
+ }catch(e){$('loginMsg').textContent='Server ချိတ်မရပါ။ Internet ပြန်စစ်ပါ။'}
+ finally{b.disabled=false;b.textContent='ဝင်မယ်'}
+});
+$('refresh').onclick=load;
+$('logout').onclick=async()=>{await fetch('/api/owner/auth',{method:'DELETE',credentials:'include'});location.reload()};
+async function topup(id){
+ if(!confirm('ဒီ Order ကို Top Up ပို့မလား?'))return;
  try{
   const r=await fetch('/api/owner/topup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:id,payment_confirmed:true})});
   const d=await r.json().catch(()=>({}));
-  if(!r.ok||!d.ok){alert('❌ Top Up မအောင်မြင်ပါ: '+(d.error||r.status));return}
-  alert('✅ LioGames ဆီ Top Up Order ပို့ပြီးပါပြီ။');
-  await loadData();
- }catch(e){alert('❌ Top Up server ချိတ်မရပါ။');}
+  if(!r.ok||!d.ok){alert('Top Up မအောင်မြင်ပါ: '+(d.error||r.status));return}
+  alert('Top Up Order ပို့ပြီးပါပြီ');load();
+ }catch(e){alert('Server ချိတ်မရပါ')}
 }
-async function loadData(){
+function money(n,c='฿'){return c+' '+Number(n||0).toLocaleString()}
+function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+async function load(){
  try{
   const r=await fetch('/api/owner/data',{credentials:'include',cache:'no-store'});
-  if(r.status===401){loginBox.style.display='flex';return}
-  const d=await r.json();
-  document.getElementById('thbSales').textContent='฿ '+Number(d.thb?.sales||d.sales||0).toLocaleString();
-  document.getElementById('mmkSales').textContent=Number(d.mmk?.sales||0).toLocaleString()+' MMK';
-  document.getElementById('thbOrders').textContent=Number(d.thb?.orders||0).toLocaleString();
-  document.getElementById('mmkOrders').textContent=Number(d.mmk?.orders||0).toLocaleString();
-  const t=d.today||d; const a=d.all||{};
-  document.getElementById('todaySales').textContent='฿ '+Number(t.thb?.sales||t.sales||0).toLocaleString();
-  document.getElementById('todayOrders').textContent=Number(t.orders||0).toLocaleString();
-  document.getElementById('todaySupplier').textContent='฿ '+Number(t.thb?.supplierCost||t.supplierCost||0).toLocaleString();
-  document.getElementById('todayFee').textContent='฿ '+Number(t.thb?.paymentFee||t.paymentFee||0).toLocaleString();
-  document.getElementById('todayProfit').textContent='฿ '+Number(t.thb?.profit||t.profit||0).toLocaleString();
-  document.getElementById('allProfit').textContent='฿ '+Number(a.thbProfit||0).toLocaleString();
-  document.getElementById('allSummary').textContent='Order '+Number(a.orders||0).toLocaleString()+' · Sales ฿'+Number(a.thbSales||0).toLocaleString();
-  const box=document.getElementById('ordersBox');
-  const items=Array.isArray(d.items)?d.items:[]; const pending=Array.isArray(d.pending)?d.pending:[]; const history=Array.isArray(d.history)?d.history:[];
-  const pendingHtml=pending.map(x=>'<div class="row"><div><b>⏳ '+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / '+String(x.serverId||'')+'</div><div class="small">'+String(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' · '+String(x.source||'')+'</div><button class="btn" style="margin-top:8px;padding:10px;font-size:13px" onclick="topupOrder(\''+String(x.id||'')+'\')">💎 ငွေချေပြီးပြီ — Top Up လုပ်မယ်</button></div><span class="pill">'+String(x.status||'Pending')+'</span></div>').join('');
-  const list=history.length?history:items; box.innerHTML=(pendingHtml?'<div class="small" style="padding:8px 0">⏳ Payment စစ်ဆေးရန်</div>'+pendingHtml:'')+(list.length?list.map(x=>'<div class="row"><div><b>'+String(x.packageName||'Order')+'</b><div class="small">ID '+String(x.id||'')+' · UID '+String(x.userId||'')+' / Zone '+String(x.serverId||'')+'</div><div class="small">'+String(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' · အရင်း '+Number(x.supplierCost||0).toLocaleString()+' · Fee '+Number(x.paymentFee||0).toLocaleString()+'</div><div class="small">'+String(x.createdAt||'')+'</div></div><span class="pill">'+String(x.status||'paid')+'</span></div>').join('') :'<div class="row"><div><b>Order မရှိသေးပါ</b><div class="small">Payment အောင်မြင်ပြီး order ဝင်လာရင် ဒီနေရာမှာပေါ်မယ်</div></div><span class="pill">Waiting</span></div>';
- }catch(e){alert('⚠️ Dashboard data ကို မဖတ်နိုင်သေးပါ။ Refresh နှိပ်ပြီး ထပ်စမ်းပါ။')}
+  if(r.status===401){loginBox.classList.remove('hide');return}
+  const d=await r.json(),t=d.today||d,a=d.all||{};
+  $('todayProfit').textContent=money(t.thb?.profit??t.profit);
+  $('todayInfo').textContent='Orders '+Number(t.orders||0).toLocaleString()+' • Sales '+money(t.thb?.sales??t.sales);
+  $('thbSales').textContent=money(d.thb?.sales??d.sales);
+  $('mmkSales').textContent=Number(d.mmk?.sales||0).toLocaleString()+' MMK';
+  $('supplier').textContent=money(t.thb?.supplierCost??t.supplierCost);
+  $('fee').textContent=money(t.thb?.paymentFee??t.paymentFee);
+  $('allOrders').textContent=Number(a.orders||0).toLocaleString();
+  $('allProfit').textContent=money(a.thbProfit);
+  $('thbOrders').textContent=Number(d.thb?.orders||0).toLocaleString();
+  $('mmkOrders').textContent=Number(d.mmk?.orders||0).toLocaleString();
+  const pending=Array.isArray(d.pending)?d.pending:[],history=Array.isArray(d.history)?d.history:(Array.isArray(d.items)?d.items:[]);
+  const list=[...pending.map(x=>({...x,_pending:true})),...history];
+  $('orders').innerHTML=list.length?list.map(x=>{
+   const id=esc(x.id),uid=esc(x.userId),zone=esc(x.serverId),name=esc(x.packageName||'Order'),status=esc(x.status||'Pending');
+   return '<div class="order"><div class="orderhead"><div><b>'+name+'</b><div class="meta">Order '+id+'<br>UID '+uid+' / Zone '+zone+'<br>'+esc(x.currency||'THB')+' '+Number(x.customerAmount||0).toLocaleString()+' • အရင်း '+Number(x.supplierCost||0).toLocaleString()+'</div></div><span class="status">'+status+'</span></div>'+(x._pending?'<button class="topup" onclick="topup(\''+id+'\')">💎 ငွေချေပြီးပြီ — Top Up</button>':'')+'</div>'
+  }).join(''):'<div class="card empty">Order မရှိသေးပါ</div>';
+ }catch(e){$('orders').innerHTML='<div class="card empty">Data မဖတ်နိုင်သေးပါ။ ↻ Refresh နှိပ်ပါ။</div>'}
 }
-checkSession();
-</script></body></html>
+session();
+</script>
+</body></html>
